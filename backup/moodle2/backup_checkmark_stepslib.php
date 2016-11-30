@@ -105,6 +105,7 @@ class backup_checkmark_activity_structure_step extends backup_activity_structure
 
         // Define file annotations!
         $checkmark->annotate_files('mod_checkmark', 'intro', null); // This file area has no itemid!
+        $feedback->annotate_files('mod_checkmark', 'feedback', 'id'); // ItemID is feedbacks ID!
 
         // Return the root element (checkmark), wrapped into standard activity structure!
         return $this->prepare_activity_structure($checkmark);

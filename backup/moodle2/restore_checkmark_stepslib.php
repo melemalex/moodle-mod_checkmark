@@ -255,6 +255,9 @@ class restore_checkmark_activity_structure_step extends restore_activity_structu
 
         $newitemid = $DB->insert_record('checkmark_feedbacks', $data);
         $this->set_mapping('checkmark_feedback', $oldid, $newitemid, true);
+
+        // MappingItemName and Context ID should be retrieved automatically!
+        $this->add_related_files('mod_checkmark', 'feedback', null, null, $oldid);
     }
 
     /**

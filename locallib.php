@@ -701,10 +701,11 @@ class checkmark {
         $tablecontent = html_writer::tag('tr', $row);
         // Second row!
         if ($showfeedback) {
+            $strfeedback = file_rewrite_pluginfile_urls($grade->str_feedback, 'pluginfile.php', $this->context->id, 'mod_checkmark', 'feedback', $feedback->id);
             $content = html_writer::tag('div', html_writer::tag('strong', get_string('grade').': ').$grade->str_long_grade,
                                         array('class' => 'grade')).
                        html_writer::tag('div', '', array('class' => 'clearer')).
-                       html_writer::tag('div', $grade->str_feedback, array('class' => 'comment'));
+                       html_writer::tag('div', $strfeedback, array('class' => 'comment'));
             $row = html_writer::tag('td', $content, array('class' => 'content', 'colspan' => 2));
             $tablecontent .= html_writer::tag('tr', $row);
         }
@@ -3198,7 +3199,17 @@ class checkmark {
         if (!($gradinginfo->items[CHECKMARK_GRADE_ITEM]->grades[$formdata->userid]->locked
               || $gradinginfo->items[CHECKMARK_GRADE_ITEM]->grades[$formdata->userid]->overridden) ) {
             $feedback->grade = $formdata->xgrade;
-            $feedback->feedback = $formdata->feedback_editor['text'];
+            // Save draft files from editor!
+            $editoroptions = mod_checkmark_grading_form::get_editor_options($this->cm);
+            var_dump($formdata);
+            $feedback->feedback = file_save_draft_area_files($formdata->feedback_editor['itemid'], $editoroptions['context']->id,
+                                                             $editoroptions['component'], $editoroptions['filearea'], $feedback->id,
+                                                             $editoroptions, $formdata->feedback_editor['text']);
+            /*$formdata = file_postupdate_standard_editor($formdata, 'feedback', $editoroptions,
+                                                        $this->context,
+                                                        $editoroptions['component'],
+                                                        $editoroptions['filearea'], $feedback->id);
+            $feedback->feedback = $formdata->feedback_editor['text'];*/
             $feedback->graderid = $USER->id;
             $update = true;
         }

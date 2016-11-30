@@ -50,8 +50,7 @@ class restore_checkmark_activity_task extends restore_activity_task {
      */
     protected function define_my_steps() {
         // Checkmark only has one structure step!
-        $this->add_step(new restore_checkmark_activity_structure_step('checkmark_structure',
-                                                                      'checkmark.xml'));
+        $this->add_step(new restore_checkmark_activity_structure_step('checkmark_structure', 'checkmark.xml'));
     }
 
     /**

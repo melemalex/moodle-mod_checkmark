@@ -2029,3 +2029,54 @@ function checkmark_page_type_list() {
     );
     return $modulepagetype;
 }
+
+/**
+ * Serves checkmark files.
+ *
+ * @param object $course
+ * @param object $cm
+ * @param object $context
+ * @param string $filearea
+ * @param array $args
+ * @param bool $forcedownload
+ * @return bool false if file not found, does not return if found - just send the file
+ */
+function checkmark_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload) {
+    global $CFG, $DB;
+    require_once($CFG->dirroot.'/mod/checkmark/locallib.php');
+
+    if ($context->contextlevel != CONTEXT_MODULE) {
+        echo "BLA!";
+        return false;
+    }
+
+    if (!$checkmark = $DB->get_record('checkmark', array('id' => $cm->instance))) {
+        echo "BLA2!";
+        return false;
+    }
+
+    require_course_login($course, true, $cm);
+
+    if (!in_array($filearea, array('intro', 'feedback'))) {
+        echo "WRONG FILEAREA!";
+        return false;
+    }
+
+    switch($filearea) {
+        case 'feedback':
+            if (!has_any_capability(array('mod/checkmark:submit', 'mod/checkmark:grade'), $context)) {
+                echo "REQUIRED CAPABILITY MISSING!";
+                return;
+            }
+            break;
+    }
+
+    $filename = array_pop($args);
+    $filepath = $args ? '/'.implode('/', $args).'/' : '/';
+    if (!$file = $fs->get_file($context->id, 'mod_checkmark', $filearea, 0, $filepath, $filename) or $file->is_directory()) {
+        send_file_not_found();
+    }
+
+    // finally send the file
+    send_stored_file($file, null, 0, false);
+}

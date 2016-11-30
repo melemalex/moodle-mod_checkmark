@@ -115,8 +115,9 @@ class mod_checkmark_grading_form extends moodleform {
             $mform->addElement('static', 'disabledfeedback', '', $feedback);
         } else {
             // Visible elements!
-            $mform->addElement('editor', 'feedback_editor', get_string('feedback', 'checkmark').':', null,
-                               $this->get_editor_options() );
+            $mform->addElement('editor', 'feedback_editor',
+                               get_string('feedback', 'checkmark').':', null,
+                               self::get_editor_options($this->_customdata->cm) );
             $mform->setType('feedback_editor', PARAM_RAW); // To be cleaned before display!
             $mform->setDefault('feedback_editor', $this->_customdata->feedback);
         }
@@ -325,15 +326,18 @@ class mod_checkmark_grading_form extends moodleform {
     /**
      * Helper method to get the editor options easily.
      *
+     * @param object course module object (needed for course module ID)
+     * @param string file area
      * @return mixed[] Editor-options
      */
-    protected function get_editor_options($editor = 'feedback') {
+    static public function get_editor_options($cm, $editor = 'feedback') {
         $editoroptions = array();
-        $editoroptions['context'] = context_module::instance($this->_customdata->cm->id);
+        $editoroptions['context'] = context_module::instance($cm->id);
         $editoroptions['component'] = 'mod_checkmark';
         $editoroptions['filearea'] = $editor;
         $editoroptions['format'] = FORMAT_HTML;
-        $editoroptions['maxfiles'] = 0;
+        $editoroptions['maxfiles'] = EDITOR_UNLIMITED_FILES;
+
         return $editoroptions;
     }
 
@@ -345,7 +349,7 @@ class mod_checkmark_grading_form extends moodleform {
      * @return array form data
      */
     public function set_data($data) {
-        $editoroptions = $this->get_editor_options();
+        $editoroptions = self::get_editor_options($this->_customdata->cm);
         if (!isset($data->feedback)) {
             $data->feedback = '';
         }
@@ -385,8 +389,7 @@ class mod_checkmark_grading_form extends moodleform {
     }
 
     /**
-     * Overwrites parents get_data() method to perform some actions in addition.
-     * TODO: do we need this still here?
+     * Overwrites parents get_data() method to perform some actions in addition (save draft files, etc.).
      *
      * @return array form data
      */
@@ -398,7 +401,8 @@ class mod_checkmark_grading_form extends moodleform {
             $itemid = $this->_customdata->feedbackobj->id;
 
             if ($data) {
-                $editoroptions = $this->get_editor_options();
+                $editoroptions = self::get_editor_options($this->_customdata->cm);
+                // Save draft files from editor!
                 $data = file_postupdate_standard_editor($data, 'feedback', $editoroptions,
                                                         $this->_customdata->context,
                                                         $editoroptions['component'],
