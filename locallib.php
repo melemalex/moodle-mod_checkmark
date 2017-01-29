@@ -797,9 +797,9 @@ class checkmark {
                         $date = userdate($submission->timemodified);
                         if ($submission->timemodified <= $this->checkmark->timedue
                             || empty($this->checkmark->timedue)) {
-                            $submitted = html_writer::tag('span', $date, array('class' => 'early'));
+                            $submitted = html_writer::tag('span', $date, array('class' => 'text-success'));
                         } else {
-                            $submitted = html_writer::tag('span', $date, array('class' => 'late'));
+                            $submitted = html_writer::tag('span', $date, array('class' => 'text-error'));
                         }
                     }
                 }

@@ -28,10 +28,6 @@
     white-space: nowrap;
 }
 
-.path-mod-checkmark .late {
-    color: red;
-}
-
 /** Styles for submissions.php **/
 #page-mod-checkmark-submissions form#options div {
     margin-left: auto;
@@ -204,38 +200,6 @@
 
 .path-mod-checkmark #id_print_settings_header .fstaticlabel label {
     font-weight: bold;
-}
-
-.path-mod-checkmark .early {
-    background-color: #9f9;
-}
-
-.path-mod-checkmark .soon {
-    background-color: #ff9;
-}
-
-.path-mod-checkmark .today {
-    background-color: #fc9;
-}
-
-.path-mod-checkmark .tobegraded,
-.checkmark .tobegraded {
-    background-color: #fc9;
-}
-
-.path-mod-checkmark .allgraded,
-.checkmark .allgraded {
-    background-color: #9f9;
-}
-
-.path-mod-checkmark .submissionsmissing,
-.checkmark .submissionsmissing {
-    background-color: #fc9;
-}
-
-.path-mod-checkmark .allsubmitted,
-.checkmark .allsubmitted {
-    background-color: #9f9;
 }
 
 .path-mod-checkmark #autogradingfieldset {
