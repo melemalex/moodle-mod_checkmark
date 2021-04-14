@@ -71,7 +71,7 @@ class mod_checkmark_external extends external_api {
             array(
                 'id' => new external_value(PARAM_INT, 'example id'),
                 'name' => new external_value(PARAM_TEXT, 'example name'),
-                'checked' => new external_value(PARAM_INT, 'example is checked? '),
+                'checked' => new external_value(PARAM_TEXT, 'example is checked? '),
             ), 'example information'
         );
     }
