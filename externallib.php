@@ -121,7 +121,7 @@ class mod_checkmark_external extends external_api {
             array(
                 'id' => new external_value(PARAM_INT, 'submission id'),
                 'time' => new external_value(PARAM_TEXT, 'submission time (last updated)'),
-                'examples' => self::example_structure(),
+                'examples' => new external_multiple_structure(self::example_structure(), 'Examples in this submission'),
             ), 'submission information'
         );
     }
