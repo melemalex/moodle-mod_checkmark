@@ -43,8 +43,7 @@ class mod_checkmark_external extends external_api {
 
     public static function get_examples($id) {
         global $DB;
-        $params = self::validate_parameters(self::get_grades_parameters(),
-            array('id' => $id);
+        $params = self::validate_parameters(self::get_grades_parameters(), array('id' => $id));
 
         $examples = array();
         $warnings = array();
