@@ -50,8 +50,14 @@ class mod_checkmark_external extends external_api {
 
         $checkmark = new checkmark($id);
 
+        foreach ($checkmark->get_examples() as $example) {
+            $r = array();
 
-        $checkmark->get_examples();
+            $r['id'] = $example->get_id();
+            $r['name'] = $example->get_name();
+
+            $examples[] = $r;
+        }
 
         $result = array();
         $result['examples'] = $examples;
