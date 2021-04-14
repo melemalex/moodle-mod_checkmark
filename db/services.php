@@ -2,7 +2,7 @@
 
 $functions = array(
 
-        'mod_assign_copy_previous_attempt' => array(
+        'mod_checkmark_get_examples' => array(
             'classname'     => 'mod_checkmark_external',
             'methodname'    => 'get_examples',
             'classpath'     => 'mod/checkmark/externallib.php',
