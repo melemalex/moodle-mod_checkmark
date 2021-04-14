@@ -44,12 +44,13 @@ class mod_checkmark_external extends external_api {
     public static function get_examples($id) {
         global $DB;
         $params = self::validate_parameters(self::get_examples_parameters(), array('id' => $id));
+        // TODO use validated params!
 
         $examples = array();
         $warnings = array();
 
         $checkmark = new checkmark($id);
-
+        
         foreach ($checkmark->get_examples() as $example) {
             $r = array();
 
@@ -64,6 +65,65 @@ class mod_checkmark_external extends external_api {
         $result['examples'] = $examples;
         $result['warnings'] = $warnings;
         return $result;
+    }
+    
+    public static function get_submission_parameters() {
+        return new external_function_parameters(
+            array(
+                'id' => new external_value(PARAM_INT, 'checkmark id'),
+            )
+        );
+    }
+
+    public static function get_submission_returns() {
+        return new external_single_structure(
+            array(
+                'submmission' => self::submission_structure(),
+                'warnings' => new external_warnings('TODO')
+            )
+        );
+    }
+
+    public static function get_submission($id) {
+        global $DB;
+        $params = self::validate_parameters(self::get_submission_parameters(), array('id' => $id));
+        // TODO use validated params!
+
+        $examples = array();
+        $warnings = array();
+
+        $checkmark = new checkmark($id);
+
+        $submission = $checkmark->get_submission();
+        foreach ($submission->examples as $example) {
+            $r = array();
+
+            $r['id'] = $example->get_id();
+            $r['name'] = $example->get_name();
+            $r['checked'] = $example->is_checked();
+
+            $examples[] = $r;
+        }
+
+        $result_submission = array();
+        $result_submission['id'] = $submission->get_id();
+        $result_submission['time'] = $submission->get_timemodified();
+        $result_submission['examples'] = $examples;
+        
+        $result = array();
+        $result['submmission'] = $result_submission;
+        $result['warnings'] = $warnings;
+        return $result;
+    }
+
+    private static function submission_structure() {
+        return new external_single_structure(
+            array(
+                'id' => new external_value(PARAM_INT, 'submission id'),
+                'time' => new external_value(PARAM_TEXT, 'submission time (last updated)'),
+                'examples' => self::example_structure(),
+            ), 'submission information'
+        );
     }
 
     private static function example_structure() {
