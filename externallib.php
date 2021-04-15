@@ -56,7 +56,7 @@ class mod_checkmark_external extends external_api {
 
             $r['id'] = $example->get_id();
             $r['name'] = $example->get_name();
-            $r['checked'] = $example->is_checked();
+            $r['checked'] = $example->is_checked() ? 1 : 0;
 
             $examples[] = $r;
         }
@@ -78,7 +78,7 @@ class mod_checkmark_external extends external_api {
     public static function get_submission_returns() {
         return new external_single_structure(
             array(
-                'submmission' => self::submission_structure(),
+                'submission' => self::submission_structure(),
                 'warnings' => new external_warnings('TODO')
             )
         );
@@ -111,7 +111,7 @@ class mod_checkmark_external extends external_api {
         $result_submission['examples'] = $examples;
         
         $result = array();
-        $result['submmission'] = $result_submission;
+        $result['submission'] = $result_submission;
         $result['warnings'] = $warnings;
         return $result;
     }
