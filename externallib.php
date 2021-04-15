@@ -100,7 +100,7 @@ class mod_checkmark_external extends external_api {
 
             $r['id'] = $example->get_id();
             $r['name'] = $example->get_name();
-            $r['checked'] = $example->is_checked();
+            $r['checked'] = $example->is_checked() ? 1 : 0;
 
             $examples[] = $r;
         }
@@ -131,7 +131,7 @@ class mod_checkmark_external extends external_api {
             array(
                 'id' => new external_value(PARAM_INT, 'example id'),
                 'name' => new external_value(PARAM_TEXT, 'example name'),
-                'checked' => new external_value(PARAM_TEXT, 'example is checked? '),
+                'checked' => new external_value(PARAM_INT, 'example is checked? '),
             ), 'example information'
         );
     }
