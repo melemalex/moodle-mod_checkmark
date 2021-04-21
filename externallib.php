@@ -94,7 +94,7 @@ class mod_checkmark_external extends external_api {
     public static function get_checkmark_returns() {
         return new external_single_structure(
             array(
-                'checkmark' => new external_multiple_structure(self::checkmark_structure(), ''),
+                'examples' => new external_multiple_structure(self::checkmark_structure(), ''),
                 'warnings' => new external_warnings('TODO')
             )
         );
