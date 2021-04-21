@@ -94,7 +94,7 @@ class mod_checkmark_external extends external_api {
     public static function get_checkmark_returns() {
         return new external_single_structure(
             array(
-                'examples' => new external_multiple_structure(self::checkmark_structure(), ''),
+                'examples' => new external_multiple_structure(self::example_structure(), ''),
                 'warnings' => new external_warnings('TODO')
             )
         );
@@ -155,20 +155,24 @@ class mod_checkmark_external extends external_api {
         $checkmark = new checkmark($id);
 
         $submission = $checkmark->get_submission();
-        foreach ($submission->examples as $example) {
-            $r = array();
+        $result_submission = array();
 
-            $r['id'] = $example->get_id();
-            $r['name'] = $example->get_name();
-            $r['checked'] = $example->is_checked() ? 1 : 0;
+        if (!!$submission) {
+            foreach ($submission->examples as $example) {
+                $r = array();
 
-            $examples[] = $r;
+                $r['id'] = $example->get_id();
+                $r['name'] = $example->get_name();
+                $r['checked'] = $example->is_checked() ? 1 : 0;
+
+                $examples[] = $r;
+            }
+
+            $result_submission['id'] = $submission->get_id();
+            $result_submission['time'] = $submission->get_timemodified();
+            $result_submission['examples'] = $examples;
         }
 
-        $result_submission = array();
-        $result_submission['id'] = $submission->get_id();
-        $result_submission['time'] = $submission->get_timemodified();
-        $result_submission['examples'] = $examples;
 
         $result = array();
         $result['submission'] = $result_submission;
