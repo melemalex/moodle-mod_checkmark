@@ -311,7 +311,7 @@ create index mdl_chec_cou_ix
                 'id' => new external_value(PARAM_INT, 'checkmark id'),
                 'course' => new external_value(PARAM_INT, 'course id the checkmark belongs to'),
                 'name' => new external_value(PARAM_TEXT, 'checkmark name'),
-                'intro' => new external_value(PARAM_TEXT, 'intro/description of the checkmark'),
+                'intro' => new external_value(PARAM_RAW, 'intro/description of the checkmark'),
                 'introformat' => new external_value(PARAM_INT, 'intro format'),
                 'timedue' => new external_value(PARAM_INT, 'time due of the checkmark'),
                 'grade' => new external_value(PARAM_INT, 'grade of the checkmark (if graded)'),
