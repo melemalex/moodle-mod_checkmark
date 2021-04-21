@@ -342,6 +342,7 @@ create index mdl_chec_cou_ix
             array(
                 'id' => new external_value(PARAM_INT, 'example id'),
                 'name' => new external_value(PARAM_TEXT, 'example name'),
+                'state' => new external_value(PARAM_INT, 'example state'),
             ), 'example information'
         );
     }
@@ -357,7 +358,7 @@ create index mdl_chec_cou_ix
         $result_checkmark['introformat'] = $checkmark->checkmark->introformat;
         $result_checkmark['timedue'] = $checkmark->checkmark->timedue;
         
-        $result_checkmark['examples'] = self::export_examples($checkmark->get_examples());
+        $result_checkmark['examples'] = self::export_examples($checkmark->get_submission());
 
         return $result_checkmark;
     }
@@ -369,6 +370,7 @@ create index mdl_chec_cou_ix
             $result_example = array();
             $result_example['id'] = $example->get_id();
             $result_example['name'] = $example->get_name();
+            $result_example['state'] = $example->get_state() ? 1 : 0;
 
             $result_examples[] = $result_example;
         }
