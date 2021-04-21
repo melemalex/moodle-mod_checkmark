@@ -36,7 +36,7 @@ class mod_checkmark_external extends external_api {
         $warnings = array();
 
         $result = array();
-        $result['debug'] = var_export($checkmark, true) . "\n" . var_export($checkmark->get_submission());
+        $result['debug'] = var_export($checkmark, true) . "\n" . var_export($checkmark->get_submission(), true);
         $result['warnings'] = $warnings;
         return $result;
     }
