@@ -94,7 +94,7 @@ class mod_checkmark_external extends external_api {
     public static function get_checkmark_returns() {
         return new external_single_structure(
             array(
-                'examples' => new external_multiple_structure(self::example_structure(), ''),
+                'examples' => new external_multiple_structure(self::debug_structure(), ''),
                 'warnings' => new external_warnings('TODO')
             )
         );
@@ -103,12 +103,19 @@ class mod_checkmark_external extends external_api {
     public static function get_checkmark($id) {
         global $DB;
         $params = self::validate_parameters(self::get_checkmark_parameters(), array('id' => $id));
-        // TODO use validated params!
+
+        $checkmark_module = get_coursemodule_from_instance("checkmark", $params['id']);
+
+        $str = var_export($checkmark_module, true);
+
 
         $examples = array();
+        $debug = array();
+        $debug['all'] = $str;
+        $examples[] = $debug;
         $warnings = array();
 
-        $checkmark = new checkmark($id);
+/*        $checkmark = new checkmark($id);
 
 
         foreach ($checkmark->get_examples() as $example) {
@@ -119,7 +126,7 @@ class mod_checkmark_external extends external_api {
             $r['checked'] = $example->is_checked() ? 1 : 0;
 
             $examples[] = $r;
-        }
+        }*/
 
         $result = array();
         $result['examples'] = $examples;
