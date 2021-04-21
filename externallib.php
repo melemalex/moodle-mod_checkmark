@@ -131,63 +131,11 @@ class mod_checkmark_external extends external_api {
         return $result;
     }
 
-    public static function get_submission_parameters() {
-        return new external_function_parameters(
-            array(
-                'id' => new external_value(PARAM_INT, 'checkmark id'),
-            )
-        );
-    }
-
-    public static function get_submission_returns() {
-        return new external_single_structure(
-            array(
-                'submission' => self::submission_structure(),
-                'warnings' => new external_warnings('TODO')
-            )
-        );
-    }
-
-    public static function get_submission($id) {
-        global $DB;
-        $params = self::validate_parameters(self::get_submission_parameters(), array('id' => $id));
-        // TODO use validated params!
-
-        $examples = array();
-        $warnings = array();
-
-        $checkmark = new checkmark($id);
-
-        $submission = $checkmark->get_submission();
-        $result_submission = array();
-
-        if (!!$submission) {
-            foreach ($submission->examples as $example) {
-                $r = array();
-
-                $r['id'] = $example->get_id();
-                $r['name'] = $example->get_name();
-                $r['checked'] = $example->is_checked() ? 1 : 0;
-
-                $examples[] = $r;
-            }
-
-            $result_submission['id'] = $submission->get_id();
-            $result_submission['time'] = $submission->get_timemodified();
-            $result_submission['examples'] = $examples;
-        }
-
-
-        $result = array();
-        $result['submission'] = $result_submission;
-        $result['warnings'] = $warnings;
-        return $result;
-    }
-
     public static function submit_parameters() {
         return new external_function_parameters(
             array(
                 'id' => new external_value(PARAM_INT, 'checkmark id'),
+                'submission_examples' => new external_multiple_structure(self::submit_example_structure(), 'submitted examples'),
             )
         );
     }
@@ -195,34 +143,46 @@ class mod_checkmark_external extends external_api {
     public static function submit_returns() {
         return new external_single_structure(
             array(
-                'examples' => new external_multiple_structure(self::example_structure(), ''),
+                'checkmark' => self::checkmark_structure(),
+                'debug' => new external_value(PARAM_RAW, "debug"),
                 'warnings' => new external_warnings('TODO')
             )
         );
     }
 
-    public static function submit($id) {
+    public static function submit($id, $submission_examples) {
         global $DB;
-        $params = self::validate_parameters(self::submit_parameters(), array('id' => $id));
-        // TODO use validated params!
+        $params = self::validate_parameters(self::submit_parameters(), array(
+            'id' => $id,
+            'submission_examples' => $submission_examples
+        ));
 
-        $examples = array();
         $warnings = array();
 
-        $checkmark = new checkmark($id);
+        $checkmark = new checkmark($params['id']);
 
-        foreach ($checkmark->submit() as $example) {
-            $r = array();
+/*
+        // Create the submission if needed & return its id!
+        $submission = $checkmark->get_submission(0, true);
+        $formarray = json_decode(json_encode($formdata), true);
 
-            $r['id'] = $example->get_id();
-            $r['name'] = $example->get_name();
-            $r['checked'] = $example->is_checked() ? 1 : 0;
+        foreach ($submission->get_examples() as $key => $example) {
+            $name = $key;
 
-            $examples[] = $r;
+            if (isset($formarray[$name]) && ($formarray[$name] != 0)) {
+                $submission->get_example($key)->set_state(\mod_checkmark\example::CHECKED);
+            } else {
+                $submission->get_example($key)->set_state(\mod_checkmark\example::UNCHECKED);
+            }
         }
 
+        $checkmark->update_submission($submission);
+        $checkmark->email_teachers($submission);*/
+
+
         $result = array();
-        $result['examples'] = $examples;
+        $result['debug'] = var_export($params, true);
+        $result['checkmark'] = self::export_checkmark($checkmark);
         $result['warnings'] = $warnings;
         return $result;
     }
@@ -345,6 +305,16 @@ create index mdl_chec_cou_ix
                 'id' => new external_value(PARAM_INT, 'example id'),
                 'name' => new external_value(PARAM_TEXT, 'example name'),
                 'checked' => new external_value(PARAM_INT, 'example checked state', VALUE_OPTIONAL),
+            ), 'example information'
+        );
+    }
+
+    private static function submit_example_structure() {
+        return new external_single_structure(
+            array(
+                'id' => new external_value(PARAM_INT, 'example id'),
+                'name' => new external_value(PARAM_TEXT, 'example name', VALUE_OPTIONAL),
+                'checked' => new external_value(PARAM_INT, 'example checked state'),
             ), 'example information'
         );
     }
