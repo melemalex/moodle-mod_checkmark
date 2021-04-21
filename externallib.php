@@ -115,7 +115,7 @@ class mod_checkmark_external extends external_api {
             $r = array();
 
             $r['id'] = $example->get_id();
-            $r['name'] = $example->get();
+            $r['name'] = $example->get_name();
             $r['checked'] = $example->is_checked() ? 1 : 0;
 
             $examples[] = $r;
