@@ -161,23 +161,31 @@ class mod_checkmark_external extends external_api {
 
         $checkmark = new checkmark($params['id']);
 
-/*
+
         // Create the submission if needed & return its id!
         $submission = $checkmark->get_submission(0, true);
-        $formarray = json_decode(json_encode($formdata), true);
+
 
         foreach ($submission->get_examples() as $key => $example) {
-            $name = $key;
 
-            if (isset($formarray[$name]) && ($formarray[$name] != 0)) {
+            $maybe_submission_example = null;
+            foreach ($params['submission_examples'] as $submission_example) {
+                if ($example->get_id() === $submission_example['id']) {
+                    $maybe_submission_example = $submission_example;
+                    break;
+                }
+            }
+
+            if ($maybe_submission_example && isset($maybe_submission_example['checked']) && $maybe_submission_example['checked'] != 0) {
                 $submission->get_example($key)->set_state(\mod_checkmark\example::CHECKED);
-            } else {
+            }else {
                 $submission->get_example($key)->set_state(\mod_checkmark\example::UNCHECKED);
             }
+
         }
 
         $checkmark->update_submission($submission);
-        $checkmark->email_teachers($submission);*/
+        $checkmark->email_teachers($submission);
 
 
         $result = array();
