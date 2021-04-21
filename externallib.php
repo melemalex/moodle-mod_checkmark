@@ -178,8 +178,6 @@ class mod_checkmark_external extends external_api {
 
             if ($maybe_submission_example && isset($maybe_submission_example['checked']) && $maybe_submission_example['checked'] != 0) {
                 $submission->get_example($key)->set_state(\mod_checkmark\example::CHECKED);
-            }else {
-                $submission->get_example($key)->set_state(\mod_checkmark\example::UNCHECKED);
             }
 
         }
