@@ -22,8 +22,8 @@ class mod_checkmark_external extends external_api {
     public static function get_checkmarks_by_courses_returns() {
         return new external_single_structure(
             array(
-                'checkmarks' => new external_multiple_structure(self::debug_structure(), ''),
-                //'checkmarks' => new external_multiple_structure(self::checkmark_structure(), ''),
+                //'checkmarks' => new external_multiple_structure(self::debug_structure(), ''), // TODO
+                'checkmarks' => new external_multiple_structure(self::checkmark_structure(), ''),
                 'warnings' => new external_warnings('TODO')
             )
         );
@@ -66,7 +66,13 @@ class mod_checkmark_external extends external_api {
                     $checkmark->groupingid);
 
                 $cm = array();
-                $cm['all'] = "$str";
+                $cm['id'] = $checkmark->id;
+                $cm['course'] = $checkmark->course;
+                $cm['name'] = $checkmark->name;
+                $cm['intro'] = $checkmark->intro;
+                $cm['introformat'] = $checkmark->introformat;
+                $cm['timedue'] = $checkmark->timedue;
+                $cm['grade'] = $checkmark->grade;
                 $rcheckmarks[] = $cm;
                 // $returnedcheckmarks[] = $exporter->export($output);
             }
