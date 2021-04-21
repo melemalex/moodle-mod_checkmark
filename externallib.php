@@ -260,7 +260,7 @@ class mod_checkmark_external extends external_api {
     private static function debug_structure() {
         return new external_single_structure(
             array(
-                'all' => new external_value(PARAM_TEXT, 'DEBUG'),
+                'all' => new external_value(PARAM_RAW, 'DEBUG'),
             ), 'debug information'
         );
     }
