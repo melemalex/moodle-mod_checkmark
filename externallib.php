@@ -110,7 +110,7 @@ class mod_checkmark_external extends external_api {
 
         $checkmark = new checkmark($id);
 
-        $checkmark->view_intro();
+
         foreach ($checkmark->get_examples() as $example) {
             $r = array();
 
@@ -153,7 +153,6 @@ class mod_checkmark_external extends external_api {
         $warnings = array();
 
         $checkmark = new checkmark($id);
-        $checkmark->update_submission();
 
         $submission = $checkmark->get_submission();
         foreach ($submission->examples as $example) {
