@@ -54,25 +54,11 @@ class mod_checkmark_external extends external_api {
 
             // Get the checkmarks in this course, this function checks users visibility permissions.
             // We can avoid then additional validate_context calls.
-            $checkmarks = get_all_instances_in_courses("checkmark", $courses);
-            foreach ($checkmarks as $checkmark) {
+            $checkmark_instances = get_all_instances_in_courses("checkmark", $courses);
+            foreach ($checkmark_instances as $checkmark_instance) {
 
-                $str = var_export($checkmark, true);
-                $context = context_module::instance($checkmark->coursemodule);
-
-                // Remove fields that are not from the checkmark (added by get_all_instances_in_courses).
-                unset($checkmark->context, $checkmark->visible, $checkmark->section, $checkmark->groupmode,
-                    $checkmark->groupingid);
-
-                $cm = array();
-                $cm['id'] = $checkmark->coursemodule;
-                $cm['instance'] = $checkmark->id;
-                $cm['course'] = $checkmark->course;
-                $cm['name'] = $checkmark->name;
-                $cm['intro'] = $checkmark->intro;
-                $cm['introformat'] = $checkmark->introformat;
-                $cm['timedue'] = $checkmark->timedue;
-                $rcheckmarks[] = $cm;
+                $checkmark = new checkmark($checkmark_instance->coursemodule);
+                $rcheckmarks[] = self::export_checkmark($checkmark);
             }
         }
 
@@ -93,7 +79,7 @@ class mod_checkmark_external extends external_api {
     public static function get_checkmark_returns() {
         return new external_single_structure(
             array(
-                'examples' => new external_multiple_structure(self::debug_structure(), ''),
+                'checkmark' => self::checkmark_structure(),
                 'warnings' => new external_warnings('TODO')
             )
         );
@@ -103,33 +89,12 @@ class mod_checkmark_external extends external_api {
         global $DB;
         $params = self::validate_parameters(self::get_checkmark_parameters(), array('id' => $id));
 
-        //$checkmark_module = get_coursemodule_from_instance("checkmark", $params['id']);
-
         $checkmark = new checkmark($params['id']);
-        $str = var_export($checkmark, true);
 
-
-        $examples = array();
-        $debug = array();
-        $debug['all'] = $str;
-        $examples[] = $debug;
         $warnings = array();
 
-/*        $checkmark = new checkmark($id);
-
-
-        foreach ($checkmark->get_examples() as $example) {
-            $r = array();
-
-            $r['id'] = $example->get_id();
-            $r['name'] = $example->get_name();
-            $r['checked'] = $example->is_checked() ? 1 : 0;
-
-            $examples[] = $r;
-        }*/
-
         $result = array();
-        $result['examples'] = $examples;
+        $result['checkmark'] = self::export_checkmark($checkmark);
         $result['warnings'] = $warnings;
         return $result;
     }
@@ -319,12 +284,13 @@ create index mdl_chec_cou_ix
         return new external_single_structure(
             array(
                 'id' => new external_value(PARAM_INT, 'checkmark id'),
-                'instance' => new external_value(PARAM_INT, 'checkmark id'),
+                'instance' => new external_value(PARAM_INT, 'checkmark instance id'),
                 'course' => new external_value(PARAM_INT, 'course id the checkmark belongs to'),
                 'name' => new external_value(PARAM_TEXT, 'checkmark name'),
                 'intro' => new external_value(PARAM_RAW, 'intro/description of the checkmark'),
                 'introformat' => new external_value(PARAM_INT, 'intro format'),
                 'timedue' => new external_value(PARAM_INT, 'time due of the checkmark'),
+                'examples' => new external_multiple_structure(self::example_structure(), 'Examples')
             ), 'example information'
         );
     }
@@ -344,9 +310,38 @@ create index mdl_chec_cou_ix
             array(
                 'id' => new external_value(PARAM_INT, 'example id'),
                 'name' => new external_value(PARAM_TEXT, 'example name'),
-                'checked' => new external_value(PARAM_INT, 'example is checked? '),
             ), 'example information'
         );
+    }
+
+    private static function export_checkmark($checkmark) {
+        $result_checkmark = array();
+
+        $result_checkmark['id'] = $checkmark->cm->id;
+        $result_checkmark['instance'] = $checkmark->checkmark->id;
+        $result_checkmark['course'] = $checkmark->checkmark->course;
+        $result_checkmark['name'] = $checkmark->checkmark->name;
+        $result_checkmark['intro'] = $checkmark->checkmark->intro;
+        $result_checkmark['introformat'] = $checkmark->checkmark->introformat;
+        $result_checkmark['timedue'] = $checkmark->checkmark->timedue;
+        
+        $result_checkmark['examples'] = self::export_examples($checkmark);
+
+        return $result_checkmark;
+    }
+    
+    private static function export_examples($examples) {
+        $result_examples = array();
+        foreach ($examples as $example) {
+            
+            $result_examples = array();
+            $result_examples['id'] = $example->get_id();
+            $result_examples['name'] = $example->get_name();
+
+            $result_examples[] = $result_examples;
+        }
+        
+        return $result_examples;
     }
 
 }
