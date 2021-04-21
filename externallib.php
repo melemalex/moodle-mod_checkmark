@@ -9,6 +9,38 @@ require_once($CFG->dirroot . '/mod/checkmark/locallib.php');
 
 class mod_checkmark_external extends external_api {
 
+
+    public static function debug_info_parameters() {
+        return new external_function_parameters(
+            array(
+                'id' => new external_value(PARAM_INT, 'checkmark id'),
+            )
+        );
+    }
+
+    public static function debug_info_returns() {
+        return new external_single_structure(
+            array(
+                'debug' => new external_value(PARAM_RAW, "info"),
+                'warnings' => new external_warnings('TODO')
+            )
+        );
+    }
+
+    public static function debug_info($id) {
+        global $DB;
+        $params = self::validate_parameters(self::get_checkmark_parameters(), array('id' => $id));
+
+        $checkmark = new checkmark($params['id']);
+
+        $warnings = array();
+
+        $result = array();
+        $result['debug'] = var_export($checkmark, true);
+        $result['warnings'] = $warnings;
+        return $result;
+    }
+
     public static function get_checkmarks_by_courses_parameters() {
         return new external_function_parameters(
             array(

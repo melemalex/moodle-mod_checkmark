@@ -31,7 +31,7 @@ $functions = array(
             'methodname'    => 'submit',
             'classpath'     => 'mod/checkmark/externallib.php',
             'description'   => 'Get submission for checkmark',
-            'type'          => 'read',
+            'type'          => 'write',
         ),
 
         'mod_checkmark_get_checkmark_access_information' => array(
@@ -39,6 +39,15 @@ $functions = array(
             'methodname'    => 'get_checkmark_access_information',
             'classpath'     => 'mod/checkmark/externallib.php',
             'description'   => 'Get submission for checkmark',
+            'type'          => 'read',
+        ),
+
+
+        'mod_checkmark_debug_info' => array(
+            'classname'     => 'mod_checkmark_external',
+            'methodname'    => 'debug_info',
+            'classpath'     => 'mod/checkmark/externallib.php',
+            'description'   => 'debug info',
             'type'          => 'read',
         ),
 
