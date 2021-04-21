@@ -39,7 +39,7 @@ class mod_checkmark_external extends external_api {
         );
         $params = self::validate_parameters(self::get_checkmarks_by_courses_parameters(), $params);
 
-        $checkmarks = array();
+        $rcheckmarks = array();
 
         $mycourses = array();
         if (empty($params['courseids'])) {
@@ -67,12 +67,13 @@ class mod_checkmark_external extends external_api {
 
                 $cm = array();
                 $cm['all'] = $str;
+                $rcheckmarks[] = $cm;
                 // $returnedcheckmarks[] = $exporter->export($output);
             }
         }
 
         $result = array();
-        $result['checkmarks'] = $checkmarks;
+        $result['checkmarks'] = $rcheckmarks;
         $result['warnings'] = $warnings;
         return $result;
     }
