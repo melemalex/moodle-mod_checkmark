@@ -66,7 +66,7 @@ class mod_checkmark_external extends external_api {
                     $checkmark->groupingid);
 
                 $cm = array();
-                $cm['all'] = $str;
+                $cm['all'] = "$str";
                 $rcheckmarks[] = $cm;
                 // $returnedcheckmarks[] = $exporter->export($output);
             }
