@@ -325,7 +325,7 @@ create index mdl_chec_cou_ix
         $result_checkmark['introformat'] = $checkmark->checkmark->introformat;
         $result_checkmark['timedue'] = $checkmark->checkmark->timedue;
         
-        $result_checkmark['examples'] = []; //self::export_examples($checkmark->get_examples());
+        $result_checkmark['examples'] = self::export_examples($checkmark->get_examples());
 
         return $result_checkmark;
     }
@@ -334,11 +334,11 @@ create index mdl_chec_cou_ix
         $result_examples = array();
         foreach ($examples as $example) {
             
-            $result_examples = array();
-            $result_examples['id'] = $example->get_id();
-            $result_examples['name'] = $example->get_name();
+            $result_example = array();
+            $result_example['id'] = $example->get_id();
+            $result_example['name'] = $example->get_name();
 
-            $result_examples[] = $result_examples;
+            $result_examples[] = $result_example;
         }
         
         return $result_examples;
