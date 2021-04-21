@@ -309,8 +309,8 @@ create index mdl_chec_cou_ix
         return new external_single_structure(
             array(
                 'debug' => new external_value(PARAM_RAW, 'checkmark id'),
-                'coursemodule' => new external_value(PARAM_INT, 'checkmark id'),
                 'id' => new external_value(PARAM_INT, 'checkmark id'),
+                'instance' => new external_value(PARAM_INT, 'checkmark id'),
                 'course' => new external_value(PARAM_INT, 'course id the checkmark belongs to'),
                 'name' => new external_value(PARAM_TEXT, 'checkmark name'),
                 'intro' => new external_value(PARAM_RAW, 'intro/description of the checkmark'),
