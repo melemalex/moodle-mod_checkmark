@@ -13,7 +13,7 @@ class mod_checkmark_external extends external_api {
         return new external_function_parameters(
             array(
                 'courseids' => new external_multiple_structure(
-                    new external_value(PARAM_INT, 'Course id'), 'Array of course ids', VALUE_DEFAULT, array()
+                    new external_value(PARAM_INT, 'Course id'), 'Array of course ids (all enrolled courses if empty array)', VALUE_DEFAULT, array()
                 ),
             )
         );
@@ -72,7 +72,6 @@ class mod_checkmark_external extends external_api {
                 $cm['intro'] = $checkmark->intro;
                 $cm['introformat'] = $checkmark->introformat;
                 $cm['timedue'] = $checkmark->timedue;
-                $cm['grade'] = $checkmark->grade;
                 $rcheckmarks[] = $cm;
                 // $returnedcheckmarks[] = $exporter->export($output);
             }
@@ -314,7 +313,6 @@ create index mdl_chec_cou_ix
                 'intro' => new external_value(PARAM_RAW, 'intro/description of the checkmark'),
                 'introformat' => new external_value(PARAM_INT, 'intro format'),
                 'timedue' => new external_value(PARAM_INT, 'time due of the checkmark'),
-                'grade' => new external_value(PARAM_INT, 'grade of the checkmark (if graded)'),
             ), 'example information'
         );
     }
