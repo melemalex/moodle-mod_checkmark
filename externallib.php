@@ -36,7 +36,7 @@ class mod_checkmark_external extends external_api {
         $warnings = array();
 
         $result = array();
-        $result['debug'] = var_export($checkmark, true);
+        $result['debug'] = var_export($checkmark, true) . "\n" . var_export($checkmark->get_submission());
         $result['warnings'] = $warnings;
         return $result;
     }
@@ -342,7 +342,7 @@ create index mdl_chec_cou_ix
             array(
                 'id' => new external_value(PARAM_INT, 'example id'),
                 'name' => new external_value(PARAM_TEXT, 'example name'),
-                'state' => new external_value(PARAM_INT, 'example state'),
+                'checked' => new external_value(PARAM_INT, 'example checked state'),
             ), 'example information'
         );
     }
@@ -370,7 +370,7 @@ create index mdl_chec_cou_ix
             $result_example = array();
             $result_example['id'] = $example->get_id();
             $result_example['name'] = $example->get_name();
-            $result_example['state'] = $example->get_state() ? 1 : 0;
+            $result_example['checked'] = $example->is_checked() ? 1 : 0;
 
             $result_examples[] = $result_example;
         }
