@@ -22,7 +22,6 @@ class mod_checkmark_external extends external_api {
     public static function get_checkmarks_by_courses_returns() {
         return new external_single_structure(
             array(
-                //'checkmarks' => new external_multiple_structure(self::debug_structure(), ''), // TODO
                 'checkmarks' => new external_multiple_structure(self::checkmark_structure(), ''),
                 'warnings' => new external_warnings('TODO')
             )
@@ -62,18 +61,19 @@ class mod_checkmark_external extends external_api {
                 $context = context_module::instance($checkmark->coursemodule);
 
                 // Remove fields that are not from the checkmark (added by get_all_instances_in_courses).
-                unset($checkmark->coursemodule, $checkmark->context, $checkmark->visible, $checkmark->section, $checkmark->groupmode,
+                unset($checkmark->context, $checkmark->visible, $checkmark->section, $checkmark->groupmode,
                     $checkmark->groupingid);
 
                 $cm = array();
-                $cm['id'] = $checkmark->id;
+                $cm['debug'] = $str; // TODO
+                $cm['id'] = $checkmark->coursemodule;
+                $cm['instance'] = $checkmark->id;
                 $cm['course'] = $checkmark->course;
                 $cm['name'] = $checkmark->name;
                 $cm['intro'] = $checkmark->intro;
                 $cm['introformat'] = $checkmark->introformat;
                 $cm['timedue'] = $checkmark->timedue;
                 $rcheckmarks[] = $cm;
-                // $returnedcheckmarks[] = $exporter->export($output);
             }
         }
 
@@ -94,7 +94,7 @@ class mod_checkmark_external extends external_api {
     public static function get_checkmark_returns() {
         return new external_single_structure(
             array(
-                'examples' => new external_multiple_structure(self::example_structure(), ''),
+                'checkmark' => new external_multiple_structure(self::checkmark_structure(), ''),
                 'warnings' => new external_warnings('TODO')
             )
         );
@@ -110,11 +110,12 @@ class mod_checkmark_external extends external_api {
 
         $checkmark = new checkmark($id);
 
-        foreach ($checkmark->get_checkmark() as $example) {
+        $checkmark->view_intro();
+        foreach ($checkmark->get_examples() as $example) {
             $r = array();
 
             $r['id'] = $example->get_id();
-            $r['name'] = $example->get_name();
+            $r['name'] = $example->get();
             $r['checked'] = $example->is_checked() ? 1 : 0;
 
             $examples[] = $r;
@@ -307,6 +308,8 @@ create index mdl_chec_cou_ix
     private static function checkmark_structure() {
         return new external_single_structure(
             array(
+                'debug' => new external_value(PARAM_RAW, 'checkmark id'),
+                'coursemodule' => new external_value(PARAM_INT, 'checkmark id'),
                 'id' => new external_value(PARAM_INT, 'checkmark id'),
                 'course' => new external_value(PARAM_INT, 'course id the checkmark belongs to'),
                 'name' => new external_value(PARAM_TEXT, 'checkmark name'),
