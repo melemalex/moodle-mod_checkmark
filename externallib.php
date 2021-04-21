@@ -322,6 +322,8 @@ create index mdl_chec_cou_ix
                 'intro' => new external_value(PARAM_RAW, 'intro/description of the checkmark'),
                 'introformat' => new external_value(PARAM_INT, 'intro format'),
                 'timedue' => new external_value(PARAM_INT, 'time due of the checkmark'),
+                'timecreated' => new external_value(PARAM_INT, 'submission created', VALUE_OPTIONAL),
+                'timemodified' => new external_value(PARAM_INT, 'submission changed', VALUE_OPTIONAL),
                 'examples' => new external_multiple_structure(self::example_structure(), 'Examples')
             ), 'example information'
         );
@@ -342,7 +344,7 @@ create index mdl_chec_cou_ix
             array(
                 'id' => new external_value(PARAM_INT, 'example id'),
                 'name' => new external_value(PARAM_TEXT, 'example name'),
-                'checked' => new external_value(PARAM_INT, 'example checked state'),
+                'checked' => new external_value(PARAM_INT, 'example checked state', VALUE_OPTIONAL),
             ), 'example information'
         );
     }
@@ -357,20 +359,29 @@ create index mdl_chec_cou_ix
         $result_checkmark['intro'] = $checkmark->checkmark->intro;
         $result_checkmark['introformat'] = $checkmark->checkmark->introformat;
         $result_checkmark['timedue'] = $checkmark->checkmark->timedue;
-        
-        $result_checkmark['examples'] = self::export_examples($checkmark->get_submission()->get_examples());
+
+        if ($checkmark->get_submission()) {
+            $result_checkmark['timecreated'] = $checkmark->get_submission()->timecreated;
+            $result_checkmark['timemodified'] = $checkmark->get_submission()->timemodified;
+            $result_checkmark['examples'] = self::export_examples($checkmark->get_submission()->get_examples(), true);
+        }else {
+            $result_checkmark['examples'] = self::export_examples($checkmark->get_examples());
+        }
 
         return $result_checkmark;
     }
     
-    private static function export_examples($examples) {
+    private static function export_examples($examples, $export_checked = false) {
         $result_examples = array();
         foreach ($examples as $example) {
             
             $result_example = array();
             $result_example['id'] = $example->get_id();
             $result_example['name'] = $example->get_name();
-            $result_example['checked'] = $example->is_checked() ? 1 : 0;
+
+            if ($export_checked) {
+                $result_example['checked'] = $example->is_checked() ? 1 : 0;
+            }
 
             $result_examples[] = $result_example;
         }
