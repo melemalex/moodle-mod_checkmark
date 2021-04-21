@@ -325,7 +325,7 @@ create index mdl_chec_cou_ix
         $result_checkmark['introformat'] = $checkmark->checkmark->introformat;
         $result_checkmark['timedue'] = $checkmark->checkmark->timedue;
         
-        $result_checkmark['examples'] = self::export_examples($checkmark);
+        $result_checkmark['examples'] = self::export_examples($checkmark->get_examples());
 
         return $result_checkmark;
     }
