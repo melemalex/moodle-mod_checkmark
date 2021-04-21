@@ -144,7 +144,6 @@ class mod_checkmark_external extends external_api {
         return new external_single_structure(
             array(
                 'checkmark' => self::checkmark_structure(),
-                'debug' => new external_value(PARAM_RAW, "debug"),
                 'warnings' => new external_warnings('TODO')
             )
         );
@@ -195,7 +194,6 @@ class mod_checkmark_external extends external_api {
 
 
         $result = array();
-        $result['debug'] = var_export($params, true);
         $result['checkmark'] = self::export_checkmark($checkmark);
         $result['warnings'] = $warnings;
         return $result;
