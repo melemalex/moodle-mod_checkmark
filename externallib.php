@@ -65,7 +65,6 @@ class mod_checkmark_external extends external_api {
                     $checkmark->groupingid);
 
                 $cm = array();
-                $cm['debug'] = $str; // TODO
                 $cm['id'] = $checkmark->coursemodule;
                 $cm['instance'] = $checkmark->id;
                 $cm['course'] = $checkmark->course;
@@ -104,9 +103,10 @@ class mod_checkmark_external extends external_api {
         global $DB;
         $params = self::validate_parameters(self::get_checkmark_parameters(), array('id' => $id));
 
-        $checkmark_module = get_coursemodule_from_instance("checkmark", $params['id']);
+        //$checkmark_module = get_coursemodule_from_instance("checkmark", $params['id']);
 
-        $str = var_export($checkmark_module, true);
+        $checkmark = new checkmark($params['id']);
+        $str = var_export($checkmark, true);
 
 
         $examples = array();
@@ -318,7 +318,6 @@ create index mdl_chec_cou_ix
     private static function checkmark_structure() {
         return new external_single_structure(
             array(
-                'debug' => new external_value(PARAM_RAW, 'checkmark id'),
                 'id' => new external_value(PARAM_INT, 'checkmark id'),
                 'instance' => new external_value(PARAM_INT, 'checkmark id'),
                 'course' => new external_value(PARAM_INT, 'course id the checkmark belongs to'),
