@@ -166,20 +166,28 @@ class mod_checkmark_external extends external_api {
         $submission = $checkmark->get_submission(0, true);
 
 
+        $example_counter = count($submission->get_examples());
         foreach ($submission->get_examples() as $key => $example) {
 
             $maybe_submission_example = null;
             foreach ($params['submission_examples'] as $submission_example) {
                 if ($example->get_id() === $submission_example['id']) {
                     $maybe_submission_example = $submission_example;
+                    $example_counter--;
                     break;
                 }
             }
 
             if ($maybe_submission_example && isset($maybe_submission_example['checked']) && $maybe_submission_example['checked'] != 0) {
                 $submission->get_example($key)->set_state(\mod_checkmark\example::CHECKED);
+            }else {
+                $submission->get_example($key)->set_state(\mod_checkmark\example::UNCHECKED);
             }
 
+        }
+
+        if ($example_counter !== 0) {
+            throw new InvalidArgumentException("Submission examples do not match the checkmark examples.");
         }
 
         $checkmark->update_submission($submission);
