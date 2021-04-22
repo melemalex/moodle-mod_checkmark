@@ -34,6 +34,7 @@ class mod_checkmark_external extends external_api {
 
         $context = context_module::instance($checkmark->cm->id);
         require_capability('mod/checkmark:view', $context);
+        self::validate_context($context);
 
         $warnings = array();
 
@@ -124,6 +125,7 @@ class mod_checkmark_external extends external_api {
 
         $context = context_module::instance($checkmark->cm->id);
         require_capability('mod/checkmark:view', $context);
+        self::validate_context($context);
 
         $warnings = array();
 
@@ -164,6 +166,7 @@ class mod_checkmark_external extends external_api {
 
         $context = context_module::instance($checkmark->cm->id);
         require_capability('mod/checkmark:view', $context);
+        self::validate_context($context);
 
         $submission = $checkmark->get_submission();
         $feedback = $checkmark->get_feedback();
