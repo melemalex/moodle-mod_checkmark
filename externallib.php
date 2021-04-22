@@ -176,7 +176,7 @@ class mod_checkmark_external extends external_api {
         }
 
         if (!$editable) {
-            throw new moodle_exception('checkmarknoteditable', "You are currently not allowed to make changes to this checkmark submission");
+            print_error('nosubmissionallowed', 'checkmark');
         }
 
         // Create the submission if needed & return its id!
