@@ -18,14 +18,6 @@ $functions = array(
             'type'          => 'read',
         ),
 
-        'mod_checkmark_get_submission' => array(
-            'classname'     => 'mod_checkmark_external',
-            'methodname'    => 'get_submission',
-            'classpath'     => 'mod/checkmark/externallib.php',
-            'description'   => 'Get submission for checkmark',
-            'type'          => 'read',
-        ),
-
         'mod_checkmark_submit' => array(
             'classname'     => 'mod_checkmark_external',
             'methodname'    => 'submit',
