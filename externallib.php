@@ -28,10 +28,12 @@ class mod_checkmark_external extends external_api {
     }
 
     public static function debug_info($id) {
-        global $DB;
         $params = self::validate_parameters(self::get_checkmark_parameters(), array('id' => $id));
 
         $checkmark = new checkmark($params['id']);
+
+        $context = context_module::instance($checkmark->cm->id);
+        require_capability('mod/checkmark:view', $context);
 
         $warnings = array();
 
@@ -61,8 +63,6 @@ class mod_checkmark_external extends external_api {
     }
 
     public static function get_checkmarks_by_courses($courseids) {
-        global $DB;
-
         $warnings = array();
 
         $params = array(
@@ -118,10 +118,12 @@ class mod_checkmark_external extends external_api {
     }
 
     public static function get_checkmark($id) {
-        global $DB;
         $params = self::validate_parameters(self::get_checkmark_parameters(), array('id' => $id));
 
         $checkmark = new checkmark($params['id']);
+
+        $context = context_module::instance($checkmark->cm->id);
+        require_capability('mod/checkmark:view', $context);
 
         $warnings = array();
 
@@ -150,7 +152,7 @@ class mod_checkmark_external extends external_api {
     }
 
     public static function submit($id, $submission_examples) {
-        global $DB;
+        global $USER;
         $params = self::validate_parameters(self::submit_parameters(), array(
             'id' => $id,
             'submission_examples' => $submission_examples
@@ -160,6 +162,22 @@ class mod_checkmark_external extends external_api {
 
         $checkmark = new checkmark($params['id']);
 
+        $context = context_module::instance($checkmark->cm->id);
+        require_capability('mod/checkmark:view', $context);
+
+        $submission = $checkmark->get_submission();
+        $feedback = $checkmark->get_feedback();
+
+        // Guest can not submit nor edit an checkmark (bug: 4604)!
+        if (!is_enrolled($checkmark->context, $USER, 'mod/checkmark:submit')) {
+            $editable = false;
+        } else {
+            $editable = $checkmark->isopen() && (!$submission || $checkmark->checkmark->resubmit || ($feedback === false));
+        }
+
+        if (!$editable) {
+            throw new moodle_exception('checkmarknoteditable', "You are currently not allowed to make changes to this checkmark submission");
+        }
 
         // Create the submission if needed & return its id!
         $submission = $checkmark->get_submission(0, true);
