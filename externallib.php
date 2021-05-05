@@ -41,6 +41,7 @@ class mod_checkmark_external extends external_api {
 
         $debug_info["checkmark"] = $checkmark;
         $debug_info["submission"] = $checkmark->get_submission();
+        $debug_info["feedback"] = $checkmark->get_feedback();
 
 
         $warnings = array();
@@ -322,6 +323,7 @@ create index mdl_chec_cou_ix
                 'intro' => new external_value(PARAM_RAW, 'intro/description of the checkmark'),
                 'introformat' => new external_value(PARAM_INT, 'intro format'),
                 'timedue' => new external_value(PARAM_INT, 'time due of the checkmark'),
+                'cutoffdate' => new external_value(PARAM_INT, 'cutoff date of the checkmark'),
                 'submission_timecreated' => new external_value(PARAM_INT, 'submission created', VALUE_OPTIONAL),
                 'submission_timemodified' => new external_value(PARAM_INT, 'submission changed', VALUE_OPTIONAL),
                 'examples' => new external_multiple_structure(self::example_structure(), 'Examples')
@@ -369,6 +371,7 @@ create index mdl_chec_cou_ix
         $result_checkmark['intro'] = $checkmark->checkmark->intro;
         $result_checkmark['introformat'] = $checkmark->checkmark->introformat;
         $result_checkmark['timedue'] = $checkmark->checkmark->timedue;
+        $result_checkmark['cutoffdate'] = $checkmark->checkmark->cutoffdate;
 
         if ($checkmark->get_submission()) {
             $result_checkmark['submission_timecreated'] = $checkmark->get_submission()->timecreated;
