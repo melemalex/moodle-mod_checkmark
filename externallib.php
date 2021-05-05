@@ -169,14 +169,14 @@ class mod_checkmark_external extends external_api {
 
             $maybe_submission_example = null;
             foreach ($params['submission_examples'] as $submission_example) {
-                if ($example->get_id() === $submission_example->id) {
+                if ($example->get_id() === $submission_example['id']) {
                     $maybe_submission_example = $submission_example;
                     $example_counter--;
                     break;
                 }
             }
 
-            if ($maybe_submission_example && isset($maybe_submission_example->checked) && $maybe_submission_example->checked != 0) {
+            if ($maybe_submission_example && isset($maybe_submission_example['checked']) && $maybe_submission_example['checked'] != 0) {
                 $submission->get_example($key)->set_state(\mod_checkmark\example::CHECKED);
             } else {
                 $submission->get_example($key)->set_state(\mod_checkmark\example::UNCHECKED);
