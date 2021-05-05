@@ -279,40 +279,6 @@ class mod_checkmark_external extends external_api {
         );
     }
 
-    /*
-     * create table mdl_checkmark
-(
-	id bigint(10) auto_increment
-		primary key,
-	course bigint(10) default 0 not null,
-	name varchar(255) default '' not null,
-	intro longtext not null,
-	introformat smallint(4) default 0 not null,
-	alwaysshowdescription tinyint(2) default 0 not null,
-	resubmit tinyint(2) default 0 not null,
-	timeavailable bigint(10) default 0 not null,
-	timedue bigint(10) default 0 not null,
-	cutoffdate bigint(10) default 0 not null,
-	gradingdue bigint(10) default 0 not null,
-	emailteachers tinyint(2) default 0 not null,
-	grade bigint(10) default 0 not null,
-	exampleprefix varchar(255) null,
-	trackattendance smallint(4) default 0 not null,
-	attendancegradelink smallint(4) default 0 not null,
-	attendancegradebook smallint(4) default 0 not null,
-	presentationgrading smallint(4) default 0 not null,
-	presentationgrade bigint(10) default 0 not null,
-	presentationgradebook smallint(4) default 0 not null,
-	timemodified bigint(10) default 0 not null,
-	flexiblenaming smallint(4) null
-)
-comment 'Defines checkmarks';
-
-create index mdl_chec_cou_ix
-	on mdl_checkmark (course);
-
-
-     */
     private static function checkmark_structure() {
         return new external_single_structure(
             array(
@@ -326,18 +292,21 @@ create index mdl_chec_cou_ix
                 'cutoffdate' => new external_value(PARAM_INT, 'cutoff date of the checkmark'),
                 'submission_timecreated' => new external_value(PARAM_INT, 'submission created', VALUE_OPTIONAL),
                 'submission_timemodified' => new external_value(PARAM_INT, 'submission changed', VALUE_OPTIONAL),
-                'examples' => new external_multiple_structure(self::example_structure(), 'Examples')
+                'examples' => new external_multiple_structure(self::example_structure(), 'Examples'),
+                'feedback' => self::feedback_structure(),
             ), 'example information'
         );
     }
 
-    private static function submission_structure() {
+    private static function feedback_structure() {
         return new external_single_structure(
             array(
-                'id' => new external_value(PARAM_INT, 'submission id'),
-                'time' => new external_value(PARAM_TEXT, 'submission time (last updated)'),
-                'examples' => new external_multiple_structure(self::example_structure(), 'Examples in this submission'),
-            ), 'submission information'
+                'grade' => new external_value(PARAM_TEXT, 'Grade'),
+                'feedback' => new external_value(PARAM_TEXT, 'Feedback comment'),
+                'timecreated' => new external_value(PARAM_INT, 'Time the feedback was given'),
+                'timemodified' => new external_value(PARAM_INT, 'Time the feedback was modified'),
+            ), 'submission information',
+            VALUE_OPTIONAL
         );
     }
 
@@ -361,8 +330,13 @@ create index mdl_chec_cou_ix
         );
     }
 
+    /**
+     * @param $checkmark checkmark  The checkmark to be exported
+     * @return object               The exported checkmark (conforms to the checkmark_structure)
+     * @throws dml_exception
+     */
     private static function export_checkmark($checkmark) {
-        $result_checkmark = array();
+        $result_checkmark = new stdClass();
 
         $result_checkmark['id'] = $checkmark->cm->id;
         $result_checkmark['instance'] = $checkmark->checkmark->id;
@@ -381,14 +355,23 @@ create index mdl_chec_cou_ix
             $result_checkmark['examples'] = self::export_examples($checkmark->get_examples());
         }
 
+        if ($checkmark->get_feedback()) {
+            $result_checkmark['feedback'] = self::export_feedback($checkmark->get_feedback());
+        }
+
         return $result_checkmark;
     }
-    
+
+    /**
+     * @param $examples \mod_checkmark\example[]    The examples to export
+     * @param false $export_checked                 Export the information if the example is checked by the user via a submission
+     * @return array                                The exported examples (conforms to the example_structure)
+     */
     private static function export_examples($examples, $export_checked = false) {
         $result_examples = array();
         foreach ($examples as $example) {
             
-            $result_example = array();
+            $result_example = new stdClass();
             $result_example['id'] = $example->get_id();
             $result_example['name'] = $example->get_name();
 
@@ -400,6 +383,21 @@ create index mdl_chec_cou_ix
         }
         
         return $result_examples;
+    }
+
+
+    /**
+     * @param $feedback object  Feedback to be exported
+     * @return object           The exported feedback (conforms to the feedback_structure)
+     */
+    private static function export_feedback($feedback) {
+        $result_feedback = new stdClass();
+        $result_feedback['grade'] = $feedback['grade'];
+        $result_feedback['feedback'] = $feedback['feedback'];
+        $result_feedback['timecreated'] = $feedback['timecreated'];
+        $result_feedback['timemodified'] = $feedback['timemodified'];
+
+        return $result_feedback;
     }
 
 }
