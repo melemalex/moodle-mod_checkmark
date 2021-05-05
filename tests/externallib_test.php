@@ -66,8 +66,9 @@ class mod_assign_external_testcase extends externallib_advanced_testcase {
 
         $this->setUser($user);
 
-        $result = mod_checkmark_external::get_checkmarks_by_courses([$course1->id, $course2->id]);
+        $result = mod_checkmark_external::get_checkmarks_by_courses([]);
 
+        // user is enrolled only in course1 and course2, so the third checkmark module in course3 should not be included
         $this->assertEquals(2, count($result->checkmarks));
     }
 
@@ -95,7 +96,7 @@ class mod_assign_external_testcase extends externallib_advanced_testcase {
 
         $this->setUser($user);
 
-        $result = mod_checkmark_external::get_checkmark($course->id);
+        $result = mod_checkmark_external::get_checkmark($checkmark->id);
 
         // checkmark name should be equal to 'Checkmark Module'
         $this->assertEquals('Checkmark Module', $result->checkmark->name);
