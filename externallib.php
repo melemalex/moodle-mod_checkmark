@@ -2,10 +2,9 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once("$CFG->libdir/externallib.php");
-require_once("$CFG->dirroot/user/externallib.php");
+require_once($CFG->libdir . '/externallib.php');
+require_once($CFG->dirroot . '/user/externallib.php');
 require_once($CFG->dirroot . '/mod/checkmark/locallib.php');
-
 
 class mod_checkmark_external extends external_api {
 
@@ -190,7 +189,6 @@ class mod_checkmark_external extends external_api {
 
         $checkmark->update_submission($submission);
         $checkmark->email_teachers($submission);
-
 
         $result = new stdClass();
         $result->checkmark = self::export_checkmark($checkmark);
