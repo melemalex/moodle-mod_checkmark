@@ -9,26 +9,20 @@ require_once($CFG->dirroot . '/mod/checkmark/locallib.php');
 
 class mod_checkmark_external extends external_api {
 
-
     public static function debug_info_parameters() {
-        return new external_function_parameters(
-            array(
-                'id' => new external_value(PARAM_INT, 'checkmark id'),
-            )
-        );
+        return new external_function_parameters([
+            'id' => new external_value(PARAM_INT, 'checkmark id'),
+        ]);
     }
 
     public static function debug_info_returns() {
-        return new external_single_structure(
-            array(
-                'debug' => new external_value(PARAM_RAW, "info"),
-                'warnings' => new external_warnings('TODO')
-            )
-        );
+        return new external_single_structure([
+            'debug' => new external_value(PARAM_RAW, "info"),
+        ]);
     }
 
     public static function debug_info($id) {
-        $params = self::validate_parameters(self::debug_info_parameters(), array('id' => $id));
+        $params = self::validate_parameters(self::debug_info_parameters(), ['id' => $id]);
 
         $checkmark = new checkmark($params['id']);
 
@@ -36,57 +30,46 @@ class mod_checkmark_external extends external_api {
         require_capability('mod/checkmark:view', $context);
         self::validate_context($context);
 
+        $debug_info = new stdClass();
 
-        $debug_info = array();
+        $debug_info->checkmark = $checkmark;
+        $debug_info->submission = $checkmark->get_submission();
+        $debug_info->feedback = $checkmark->get_feedback();
 
-        $debug_info["checkmark"] = $checkmark;
-        $debug_info["submission"] = $checkmark->get_submission();
-        $debug_info["feedback"] = $checkmark->get_feedback();
-
-
-        $warnings = array();
-
-        $result = array();
-        $result['debug'] = json_encode($debug_info);
-        $result['warnings'] = $warnings;
+        $result = new stdClass();
+        $result->debug = json_encode($debug_info);
         return $result;
     }
 
     public static function get_checkmarks_by_courses_parameters() {
-        return new external_function_parameters(
-            array(
-                'courseids' => new external_multiple_structure(
-                    new external_value(PARAM_INT, 'Course id'), 'Array of course ids (all enrolled courses if empty array)', VALUE_DEFAULT, array()
-                ),
-            )
-        );
+        return new external_function_parameters([
+            'courseids' => new external_multiple_structure(
+                new external_value(PARAM_INT, 'Course id'), 'Array of course ids (all enrolled courses if empty array)', VALUE_DEFAULT, []
+            ),
+        ]);
     }
 
     public static function get_checkmarks_by_courses_returns() {
-        return new external_single_structure(
-            array(
-                'checkmarks' => new external_multiple_structure(self::checkmark_structure(), ''),
-                'warnings' => new external_warnings('TODO')
-            )
-        );
+        return new external_single_structure([
+            'checkmarks' => new external_multiple_structure(self::checkmark_structure(), ''),
+            'warnings' => new external_warnings('TODO')
+        ]);
     }
 
     public static function get_checkmarks_by_courses($courseids) {
-        $warnings = array();
+        $warnings = new stdClass();
 
-        $params = array(
-            'courseids' => $courseids,
-        );
-        $params = self::validate_parameters(self::get_checkmarks_by_courses_parameters(), $params);
+        $params = self::validate_parameters(self::get_checkmarks_by_courses_parameters(), [
+            'courseids' => $courseids
+        ]);
 
-        $rcheckmarks = array();
+        $rcheckmarks = new stdClass();
 
-        $mycourses = array();
+        $mycourses = new stdClass();
         if (empty($params['courseids'])) {
             $mycourses = enrol_get_my_courses();
             $params['courseids'] = array_keys($mycourses);
         }
-
 
         // Ensure there are courseids to loop through.
         if (!empty($params['courseids'])) {
@@ -103,31 +86,26 @@ class mod_checkmark_external extends external_api {
             }
         }
 
-        $result = array();
-        $result['checkmarks'] = $rcheckmarks;
-        $result['warnings'] = $warnings;
+        $result = new stdClass();
+        $result->checkmarks = $rcheckmarks;
+        $result->warnings = $warnings;
         return $result;
     }
 
     public static function get_checkmark_parameters() {
-        return new external_function_parameters(
-            array(
-                'id' => new external_value(PARAM_INT, 'checkmark id'),
-            )
-        );
+        return new external_function_parameters([
+            'id' => new external_value(PARAM_INT, 'checkmark id'),
+        ]);
     }
 
     public static function get_checkmark_returns() {
-        return new external_single_structure(
-            array(
-                'checkmark' => self::checkmark_structure(),
-                'warnings' => new external_warnings('TODO')
-            )
-        );
+        return new external_single_structure([
+            'checkmark' => self::checkmark_structure(),
+        ]);
     }
 
     public static function get_checkmark($id) {
-        $params = self::validate_parameters(self::get_checkmark_parameters(), array('id' => $id));
+        $params = self::validate_parameters(self::get_checkmark_parameters(), ['id' => $id]);
 
         $checkmark = new checkmark($params['id']);
 
@@ -135,40 +113,33 @@ class mod_checkmark_external extends external_api {
         require_capability('mod/checkmark:view', $context);
         self::validate_context($context);
 
-        $warnings = array();
-
-        $result = array();
-        $result['checkmark'] = self::export_checkmark($checkmark);
-        $result['warnings'] = $warnings;
+        $result = new stdClass();
+        $result->checkmark = self::export_checkmark($checkmark);
         return $result;
     }
 
     public static function submit_parameters() {
-        return new external_function_parameters(
-            array(
-                'id' => new external_value(PARAM_INT, 'checkmark id'),
-                'submission_examples' => new external_multiple_structure(self::submit_example_structure(), 'submitted examples'),
-            )
-        );
+        return new external_function_parameters([
+            'id' => new external_value(PARAM_INT, 'checkmark id'),
+            'submission_examples' => new external_multiple_structure(self::submit_example_structure(), 'submitted examples'),
+        ]);
     }
 
     public static function submit_returns() {
-        return new external_single_structure(
-            array(
-                'checkmark' => self::checkmark_structure(),
-                'warnings' => new external_warnings('TODO')
-            )
-        );
+        return new external_single_structure([
+            'checkmark' => self::checkmark_structure(),
+            'warnings' => new external_warnings('TODO')
+        ]);
     }
 
     public static function submit($id, $submission_examples) {
         global $USER;
-        $params = self::validate_parameters(self::submit_parameters(), array(
+        $params = self::validate_parameters(self::submit_parameters(), [
             'id' => $id,
             'submission_examples' => $submission_examples
-        ));
+        ]);
 
-        $warnings = array();
+        $warnings = new stdClass();
 
         $checkmark = new checkmark($params['id']);
 
@@ -193,22 +164,21 @@ class mod_checkmark_external extends external_api {
         // Create the submission if needed & return its id!
         $submission = $checkmark->get_submission(0, true);
 
-
         $example_counter = count($submission->get_examples());
         foreach ($submission->get_examples() as $key => $example) {
 
             $maybe_submission_example = null;
             foreach ($params['submission_examples'] as $submission_example) {
-                if ($example->get_id() === $submission_example['id']) {
+                if ($example->get_id() === $submission_example->id) {
                     $maybe_submission_example = $submission_example;
                     $example_counter--;
                     break;
                 }
             }
 
-            if ($maybe_submission_example && isset($maybe_submission_example['checked']) && $maybe_submission_example['checked'] != 0) {
+            if ($maybe_submission_example && isset($maybe_submission_example->checked) && $maybe_submission_example->checked != 0) {
                 $submission->get_example($key)->set_state(\mod_checkmark\example::CHECKED);
-            }else {
+            } else {
                 $submission->get_example($key)->set_state(\mod_checkmark\example::UNCHECKED);
             }
 
@@ -222,23 +192,21 @@ class mod_checkmark_external extends external_api {
         $checkmark->email_teachers($submission);
 
 
-        $result = array();
-        $result['checkmark'] = self::export_checkmark($checkmark);
-        $result['warnings'] = $warnings;
+        $result = new stdClass();
+        $result->checkmark = self::export_checkmark($checkmark);
+        $result->warnings = $warnings;
         return $result;
     }
 
     private static function debug_structure() {
-        return new external_single_structure(
-            array(
-                'all' => new external_value(PARAM_RAW, 'DEBUG'),
-            ), 'debug information'
-        );
+        return new external_single_structure([
+            'all' => new external_value(PARAM_RAW, 'DEBUG'),
+        ]);
     }
 
     private static function checkmark_structure() {
         return new external_single_structure(
-            array(
+            [
                 'id' => new external_value(PARAM_INT, 'checkmark id'),
                 'instance' => new external_value(PARAM_INT, 'checkmark instance id'),
                 'course' => new external_value(PARAM_INT, 'course id the checkmark belongs to'),
@@ -251,40 +219,40 @@ class mod_checkmark_external extends external_api {
                 'submission_timemodified' => new external_value(PARAM_INT, 'submission changed', VALUE_OPTIONAL),
                 'examples' => new external_multiple_structure(self::example_structure(), 'Examples'),
                 'feedback' => self::feedback_structure(),
-            ), 'example information'
+            ], 'example information'
         );
     }
 
     private static function feedback_structure() {
         return new external_single_structure(
-            array(
+            [
                 'grade' => new external_value(PARAM_TEXT, 'Grade'),
                 'feedback' => new external_value(PARAM_RAW, 'Feedback comment'),
                 'feedbackformat' => new external_value(PARAM_INT, 'Feedback comment format'),
                 'timecreated' => new external_value(PARAM_INT, 'Time the feedback was given'),
                 'timemodified' => new external_value(PARAM_INT, 'Time the feedback was modified'),
-            ), 'submission information',
+            ], 'submission information',
             VALUE_OPTIONAL
         );
     }
 
     private static function example_structure() {
         return new external_single_structure(
-            array(
+            [
                 'id' => new external_value(PARAM_INT, 'example id'),
                 'name' => new external_value(PARAM_TEXT, 'example name'),
                 'checked' => new external_value(PARAM_INT, 'example checked state', VALUE_OPTIONAL),
-            ), 'example information'
+            ], 'example information'
         );
     }
 
     private static function submit_example_structure() {
         return new external_single_structure(
-            array(
+            [
                 'id' => new external_value(PARAM_INT, 'example id'),
                 'name' => new external_value(PARAM_TEXT, 'example name', VALUE_OPTIONAL),
                 'checked' => new external_value(PARAM_INT, 'example checked state'),
-            ), 'example information'
+            ], 'example information'
         );
     }
 
@@ -294,27 +262,27 @@ class mod_checkmark_external extends external_api {
      * @throws dml_exception
      */
     private static function export_checkmark($checkmark) {
-        $result_checkmark = array();
+        $result_checkmark = new stdClass();
 
-        $result_checkmark['id'] = $checkmark->cm->id;
-        $result_checkmark['instance'] = $checkmark->checkmark->id;
-        $result_checkmark['course'] = $checkmark->checkmark->course;
-        $result_checkmark['name'] = $checkmark->checkmark->name;
-        $result_checkmark['intro'] = $checkmark->checkmark->intro;
-        $result_checkmark['introformat'] = $checkmark->checkmark->introformat;
-        $result_checkmark['timedue'] = $checkmark->checkmark->timedue;
-        $result_checkmark['cutoffdate'] = $checkmark->checkmark->cutoffdate;
+        $result_checkmark->id = $checkmark->cm->id;
+        $result_checkmark->instance = $checkmark->checkmark->id;
+        $result_checkmark->course = $checkmark->checkmark->course;
+        $result_checkmark->name = $checkmark->checkmark->name;
+        $result_checkmark->intro = $checkmark->checkmark->intro;
+        $result_checkmark->introformat = $checkmark->checkmark->introformat;
+        $result_checkmark->timedue = $checkmark->checkmark->timedue;
+        $result_checkmark->cutoffdate = $checkmark->checkmark->cutoffdate;
 
         if ($checkmark->get_submission()) {
-            $result_checkmark['submission_timecreated'] = $checkmark->get_submission()->timecreated;
-            $result_checkmark['submission_timemodified'] = $checkmark->get_submission()->timemodified;
-            $result_checkmark['examples'] = self::export_examples($checkmark->get_submission()->get_examples(), true);
-        }else {
-            $result_checkmark['examples'] = self::export_examples($checkmark->get_examples());
+            $result_checkmark->submission_timecreated = $checkmark->get_submission()->timecreated;
+            $result_checkmark->submission_timemodified = $checkmark->get_submission()->timemodified;
+            $result_checkmark->examples = self::export_examples($checkmark->get_submission()->get_examples(), true);
+        } else {
+            $result_checkmark->examples = self::export_examples($checkmark->get_examples());
         }
 
         if ($checkmark->get_feedback()) {
-            $result_checkmark['feedback'] = self::export_feedback($checkmark->get_feedback());
+            $result_checkmark->feedback = self::export_feedback($checkmark->get_feedback());
         }
 
         return $result_checkmark;
@@ -322,19 +290,19 @@ class mod_checkmark_external extends external_api {
 
     /**
      * @param $examples \mod_checkmark\example[]    The examples to export
-     * @param false $export_checked                 Export the information if the example is checked by the user via a submission
+     * @param false $export_checked Export the information if the example is checked by the user via a submission
      * @return array                                The exported examples (conforms to the example_structure)
      */
     private static function export_examples($examples, $export_checked = false) {
-        $result_examples = array();
+        $result_examples = [];
         foreach ($examples as $example) {
 
-            $result_example = array();
-            $result_example['id'] = $example->get_id();
-            $result_example['name'] = $example->get_name();
+            $result_example = new stdClass();
+            $result_example->id = $example->get_id();
+            $result_example->name = $example->get_name();
 
             if ($export_checked) {
-                $result_example['checked'] = $example->is_checked() ? 1 : 0;
+                $result_example->checked = $example->is_checked() ? 1 : 0;
             }
 
             $result_examples[] = $result_example;
@@ -343,19 +311,18 @@ class mod_checkmark_external extends external_api {
         return $result_examples;
     }
 
-
     /**
      * @param $feedback object  Feedback to be exported
      * @return object           The exported feedback (conforms to the feedback_structure)
      */
     private static function export_feedback($feedback) {
-        $result_feedback = array();
+        $result_feedback = new stdClass();
 
-        $result_feedback['grade'] = $feedback->grade;
-        $result_feedback['feedback'] = $feedback->feedback;
-        $result_feedback['feedbackformat'] = $feedback->format;
-        $result_feedback['timecreated'] = $feedback->timecreated;
-        $result_feedback['timemodified'] = $feedback->timemodified;
+        $result_feedback->grade = $feedback->grade;
+        $result_feedback->feedback = $feedback->feedback;
+        $result_feedback->feedbackformat = $feedback->format;
+        $result_feedback->timecreated = $feedback->timecreated;
+        $result_feedback->timemodified = $feedback->timemodified;
 
         return $result_feedback;
     }

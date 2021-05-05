@@ -1,46 +1,41 @@
 <?php
 
-$functions = array(
+$functions = [
 
-        'mod_checkmark_get_checkmarks_by_courses' => array(
+        'mod_checkmark_get_checkmarks_by_courses' => [
             'classname'     => 'mod_checkmark_external',
             'methodname'    => 'get_checkmarks_by_courses',
             'classpath'     => 'mod/checkmark/externallib.php',
             'description'   => 'Get all checkmarks in the given courses',
             'type'          => 'read',
-        ),
+            'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+        ],
 
-        'mod_checkmark_get_checkmark' => array(
+        'mod_checkmark_get_checkmark' => [
             'classname'     => 'mod_checkmark_external',
             'methodname'    => 'get_checkmark',
             'classpath'     => 'mod/checkmark/externallib.php',
             'description'   => 'Get the checkmark with the given id',
             'type'          => 'read',
-        ),
+            'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+        ],
 
-        'mod_checkmark_submit' => array(
+        'mod_checkmark_submit' => [
             'classname'     => 'mod_checkmark_external',
             'methodname'    => 'submit',
             'classpath'     => 'mod/checkmark/externallib.php',
-            'description'   => 'Get submission for checkmark',
+            'description'   => 'Submit a submission for the checkmark with the given id',
             'type'          => 'write',
-        ),
+            'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+        ],
 
-        'mod_checkmark_get_checkmark_access_information' => array(
-            'classname'     => 'mod_checkmark_external',
-            'methodname'    => 'get_checkmark_access_information',
-            'classpath'     => 'mod/checkmark/externallib.php',
-            'description'   => 'Get submission for checkmark',
-            'type'          => 'read',
-        ),
-
-
-        'mod_checkmark_debug_info' => array(
+        'mod_checkmark_debug_info' => [ // TODO remove debug info
             'classname'     => 'mod_checkmark_external',
             'methodname'    => 'debug_info',
             'classpath'     => 'mod/checkmark/externallib.php',
             'description'   => 'debug info',
             'type'          => 'read',
-        ),
+            'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
+        ],
 
-);
+];
