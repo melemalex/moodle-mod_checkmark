@@ -63,7 +63,7 @@ class mod_checkmark_external extends external_api {
             'courseids' => $courseids
         ]);
 
-        $rcheckmarks = new stdClass();
+        $rcheckmarks = [];
 
         $mycourses = new stdClass();
         if (empty($params['courseids'])) {
