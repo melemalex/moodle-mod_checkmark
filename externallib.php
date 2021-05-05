@@ -336,7 +336,7 @@ class mod_checkmark_external extends external_api {
      * @throws dml_exception
      */
     private static function export_checkmark($checkmark) {
-        $result_checkmark = array();
+        $result_checkmark = new stdClass();
 
         $result_checkmark['id'] = $checkmark->cm->id;
         $result_checkmark['instance'] = $checkmark->checkmark->id;
@@ -370,8 +370,8 @@ class mod_checkmark_external extends external_api {
     private static function export_examples($examples, $export_checked = false) {
         $result_examples = array();
         foreach ($examples as $example) {
-            
-            $result_example = array();
+
+            $result_example = new stdClass();
             $result_example['id'] = $example->get_id();
             $result_example['name'] = $example->get_name();
 
@@ -381,7 +381,7 @@ class mod_checkmark_external extends external_api {
 
             $result_examples[] = $result_example;
         }
-        
+
         return $result_examples;
     }
 
@@ -391,11 +391,11 @@ class mod_checkmark_external extends external_api {
      * @return object           The exported feedback (conforms to the feedback_structure)
      */
     private static function export_feedback($feedback) {
-        $result_feedback = array();
-        $result_feedback['grade'] = $feedback['grade'];
-        $result_feedback['feedback'] = $feedback['feedback'];
-        $result_feedback['timecreated'] = $feedback['timecreated'];
-        $result_feedback['timemodified'] = $feedback['timemodified'];
+        $result_feedback = new stdClass();
+        $result_feedback['grade'] = $feedback->grade;
+        $result_feedback['feedback'] = $feedback->feedback;
+        $result_feedback['timecreated'] = $feedback->timecreated;
+        $result_feedback['timemodified'] = $feedback->timemodified;
 
         return $result_feedback;
     }
