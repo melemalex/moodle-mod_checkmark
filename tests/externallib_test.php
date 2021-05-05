@@ -92,7 +92,7 @@ class mod_assign_external_testcase extends externallib_advanced_testcase {
             'introformat' => FORMAT_HTML,
         ]);
 
-	$this->setUser($user);
+        $this->setUser($user);
 
         $result = mod_checkmark_external::get_checkmark($checkmark->cmid);
 
