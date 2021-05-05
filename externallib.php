@@ -302,7 +302,8 @@ class mod_checkmark_external extends external_api {
         return new external_single_structure(
             array(
                 'grade' => new external_value(PARAM_TEXT, 'Grade'),
-                'feedback' => new external_value(PARAM_TEXT, 'Feedback comment'),
+                'feedback' => new external_value(PARAM_RAW, 'Feedback comment'),
+                'feedbackformat' => new external_value(PARAM_INT, 'Feedback comment format'),
                 'timecreated' => new external_value(PARAM_INT, 'Time the feedback was given'),
                 'timemodified' => new external_value(PARAM_INT, 'Time the feedback was modified'),
             ), 'submission information',
@@ -392,8 +393,10 @@ class mod_checkmark_external extends external_api {
      */
     private static function export_feedback($feedback) {
         $result_feedback = array();
+
         $result_feedback['grade'] = $feedback->grade;
         $result_feedback['feedback'] = $feedback->feedback;
+        $result_feedback['feedbackformat'] = $feedback->format;
         $result_feedback['timecreated'] = $feedback->timecreated;
         $result_feedback['timemodified'] = $feedback->timemodified;
 
