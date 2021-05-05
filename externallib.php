@@ -198,12 +198,6 @@ class mod_checkmark_external extends external_api {
         return $result;
     }
 
-    private static function debug_structure() {
-        return new external_single_structure([
-            'all' => new external_value(PARAM_RAW, 'DEBUG'),
-        ]);
-    }
-
     private static function checkmark_structure() {
         return new external_single_structure(
             [
