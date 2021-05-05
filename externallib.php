@@ -228,49 +228,6 @@ class mod_checkmark_external extends external_api {
         return $result;
     }
 
-    public static function get_checkmark_access_information_parameters() {
-        return new external_function_parameters(
-            array(
-                'id' => new external_value(PARAM_INT, 'checkmark id'),
-            )
-        );
-    }
-
-    public static function get_checkmark_access_information_returns() {
-        return new external_single_structure(
-            array(
-                'examples' => new external_multiple_structure(self::example_structure(), ''),
-                'warnings' => new external_warnings('TODO')
-            )
-        );
-    }
-
-    public static function get_checkmark_access_information($id) {
-        global $DB;
-        $params = self::validate_parameters(self::get_checkmark_access_information_parameters(), array('id' => $id));
-        // TODO use validated params!
-
-        $examples = array();
-        $warnings = array();
-
-        $checkmark = new checkmark($id);
-
-        foreach ($checkmark->get_checkmark_access_information() as $example) {
-            $r = array();
-
-            $r['id'] = $example->get_id();
-            $r['name'] = $example->get_name();
-            $r['checked'] = $example->is_checked() ? 1 : 0;
-
-            $examples[] = $r;
-        }
-
-        $result = array();
-        $result['examples'] = $examples;
-        $result['warnings'] = $warnings;
-        return $result;
-    }
-
     private static function debug_structure() {
         return new external_single_structure(
             array(
