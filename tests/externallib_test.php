@@ -39,9 +39,9 @@ class mod_assign_external_testcase extends externallib_advanced_testcase {
 
         $result = mod_checkmark_external::get_checkmarks_by_courses([]);
 
-        $this->assertEquals(1, count($result['checkmarks']));
+        $this->assertEquals(1, count($result->checkmarks));
 
-        $this->assertEquals('Checkmark Module', $result['checkmarks'][0]['name']);
+        $this->assertEquals('Checkmark Module', $result->checkmarks[0]->name);
     }
 
 }
