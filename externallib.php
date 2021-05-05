@@ -28,7 +28,7 @@ class mod_checkmark_external extends external_api {
     }
 
     public static function debug_info($id) {
-        $params = self::validate_parameters(self::get_checkmark_parameters(), array('id' => $id));
+        $params = self::validate_parameters(self::debug_info_parameters(), array('id' => $id));
 
         $checkmark = new checkmark($params['id']);
 
@@ -36,10 +36,17 @@ class mod_checkmark_external extends external_api {
         require_capability('mod/checkmark:view', $context);
         self::validate_context($context);
 
+
+        $debug_info = array();
+
+        $debug_info["checkmark"] = $checkmark;
+        $debug_info["submission"] = $checkmark->get_submission();
+
+
         $warnings = array();
 
         $result = array();
-        $result['debug'] = var_export($checkmark, true) . "\n" . var_export($checkmark->get_submission(), true);
+        $result['debug'] = json_encode($debug_info);
         $result['warnings'] = $warnings;
         return $result;
     }
