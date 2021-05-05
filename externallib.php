@@ -139,7 +139,7 @@ class mod_checkmark_external extends external_api {
             'submission_examples' => $submission_examples
         ]);
 
-        $warnings = new stdClass();
+        $warnings = [];
 
         $checkmark = new checkmark($params['id']);
 
