@@ -40,6 +40,10 @@ class mod_checkmark_external extends external_api {
         return $result;
     }
 
+    /**
+     * Returns description of the get_checkmarks_by_courses parameters
+     * @return external_function_parameters
+     */
     public static function get_checkmarks_by_courses_parameters() {
         return new external_function_parameters([
             'courseids' => new external_multiple_structure(
@@ -48,13 +52,28 @@ class mod_checkmark_external extends external_api {
         ]);
     }
 
+    /**
+     * Returns description of the get_checkmarks_by_courses result value
+     * @return external_single_structure
+     */
     public static function get_checkmarks_by_courses_returns() {
         return new external_single_structure([
-            'checkmarks' => new external_multiple_structure(self::checkmark_structure(), ''),
-            'warnings' => new external_warnings('TODO')
+            'checkmarks' => new external_multiple_structure(self::checkmark_structure(), 'All checkmarks for the given courses'),
+            'warnings' => new external_warnings()
         ]);
     }
 
+    /**
+     * Get all checkmarks for the courses with the given ids. If the ids are empty all checkmarks from all
+     * user-enrolled courses are returned.
+     *
+     * @param $courseids array the ids of the courses to get checkmarks for (all user enrolled courses if empty array)
+     * @return stdClass
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws invalid_parameter_exception
+     * @throws moodle_exception
+     */
     public static function get_checkmarks_by_courses($courseids) {
         $warnings = new stdClass();
 
@@ -91,12 +110,20 @@ class mod_checkmark_external extends external_api {
         return $result;
     }
 
+    /**
+     * Returns description of the get_checkmark parameters
+     * @return external_function_parameters
+     */
     public static function get_checkmark_parameters() {
         return new external_function_parameters([
-            'id' => new external_value(PARAM_INT, 'checkmark id'),
+            'id' => new external_value(PARAM_INT, 'The course module id (cmid) of the checkmark'),
         ]);
     }
 
+    /**
+     * Returns description of the get_checkmark result value
+     * @return external_single_structure
+     */
     public static function get_checkmark_returns() {
         return new external_single_structure([
             'checkmark' => self::checkmark_structure(),
@@ -104,6 +131,8 @@ class mod_checkmark_external extends external_api {
     }
 
     /**
+     * Returns the checkmark for the given id (cmid is used to find the checkmark)
+     *
      * @throws restricted_context_exception
      * @throws coding_exception
      * @throws dml_exception
@@ -125,20 +154,43 @@ class mod_checkmark_external extends external_api {
         return $result;
     }
 
+    /**
+     * Returns description of the submit parameters
+     * @return external_function_parameters
+     */
     public static function submit_parameters() {
         return new external_function_parameters([
-            'id' => new external_value(PARAM_INT, 'checkmark id'),
-            'submission_examples' => new external_multiple_structure(self::submit_example_structure(), 'submitted examples'),
+            'id' => new external_value(PARAM_INT, 'The course module id (cmid) of the checkmark'),
+            'submission_examples' => new external_multiple_structure(self::submit_example_structure(),
+                'The examples of the submission (must match the examples of the checkmark)'),
         ]);
     }
 
+    /**
+     * Returns description of the submit result value
+     * @return external_single_structure
+     */
     public static function submit_returns() {
         return new external_single_structure([
             'checkmark' => self::checkmark_structure(),
-            'warnings' => new external_warnings('TODO')
+            'warnings' => new external_warnings()
         ]);
     }
 
+    /**
+     * Checks if the user can submit a checkmark and if the given submission_examples match the examples of the
+     * checkmark. Updates the submission of the checkmark and returns the checkmark
+     *
+     * @param $id
+     * @param $submission_examples
+     * @return stdClass
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws invalid_parameter_exception
+     * @throws moodle_exception
+     * @throws required_capability_exception
+     * @throws restricted_context_exception
+     */
     public static function submit($id, $submission_examples) {
         global $USER;
         $params = self::validate_parameters(self::submit_parameters(), [
@@ -204,6 +256,10 @@ class mod_checkmark_external extends external_api {
         return $result;
     }
 
+    /**
+     * Description of the checkmark structure in result values
+     * @return external_single_structure
+     */
     private static function checkmark_structure() {
         return new external_single_structure(
             [
@@ -223,6 +279,10 @@ class mod_checkmark_external extends external_api {
         );
     }
 
+    /**
+     * Description of the feedback structure in result values
+     * @return external_single_structure
+     */
     private static function feedback_structure() {
         return new external_single_structure(
             [
@@ -236,6 +296,10 @@ class mod_checkmark_external extends external_api {
         );
     }
 
+    /**
+     * Description of the example structure in result values
+     * @return external_single_structure
+     */
     private static function example_structure() {
         return new external_single_structure(
             [
@@ -246,6 +310,10 @@ class mod_checkmark_external extends external_api {
         );
     }
 
+    /**
+     * Description of the submit_example structure in parameters
+     * @return external_single_structure
+     */
     private static function submit_example_structure() {
         return new external_single_structure(
             [
@@ -257,6 +325,8 @@ class mod_checkmark_external extends external_api {
     }
 
     /**
+     * Converts the given checkmark to match the checkmark structure for result values
+     *
      * @param $checkmark checkmark  The checkmark to be exported
      * @return object               The exported checkmark (conforms to the checkmark_structure)
      * @throws dml_exception
@@ -289,6 +359,8 @@ class mod_checkmark_external extends external_api {
     }
 
     /**
+     * Converts the given examples to match the example structure for result values
+     *
      * @param $examples \mod_checkmark\example[]    The examples to export
      * @param false $export_checked Export the information if the example is checked by the user via a submission
      * @return array                                The exported examples (conforms to the example_structure)
@@ -312,6 +384,8 @@ class mod_checkmark_external extends external_api {
     }
 
     /**
+     * Converts the given feedback to match the feedback structure for result values
+     *
      * @param $feedback object  Feedback to be exported
      * @return object           The exported feedback (conforms to the feedback_structure)
      */

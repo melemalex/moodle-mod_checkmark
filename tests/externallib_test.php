@@ -12,6 +12,9 @@ require_once($CFG->dirroot . '/mod/checkmark/externallib.php');
  */
 class mod_checkmark_external_testcase extends externallib_advanced_testcase {
 
+    /**
+     * Test if the user only gets checkmarks for enrolled courses
+     */
     public function test_get_checkmarks_by_courses() {
         global $CFG, $DB, $USER;
 
@@ -70,6 +73,9 @@ class mod_checkmark_external_testcase extends externallib_advanced_testcase {
         $this->assertEquals(2, count($result->checkmarks));
     }
 
+    /**
+     * Test if the user gets a valid checkmark from the endpoint
+     */
     public function test_get_checkmark() {
         global $CFG, $DB, $USER;
 
@@ -103,6 +109,9 @@ class mod_checkmark_external_testcase extends externallib_advanced_testcase {
         $this->assertEquals($course->id, $result->checkmark->course);
     }
 
+    /**
+     * Test if the user gets an exception when the checkmark is hidden in the course
+     */
     public function test_get_checkmark_hidden() {
         global $CFG, $DB, $USER;
 
@@ -135,6 +144,9 @@ class mod_checkmark_external_testcase extends externallib_advanced_testcase {
 
     }
 
+    /**
+     * Test the submission of a checkmark module
+     */
     public function test_get_submit() {
         global $CFG, $DB, $USER;
 
@@ -207,6 +219,9 @@ class mod_checkmark_external_testcase extends externallib_advanced_testcase {
         $this->assertEquals($result->checkmark->examples[9]->id % 2, $result->checkmark->examples[9]->checked);
     }
 
+    /**
+     * Test if the user gets an exception if the submission is already closed ('cutofdate' was yesterday)
+     */
     public function test_get_submit_negative() {
         global $CFG, $DB, $USER;
 
@@ -239,7 +254,7 @@ class mod_checkmark_external_testcase extends externallib_advanced_testcase {
             $submission_examples[] = ['id' => $example->id, 'checked' => $example->id % 2];
         }
 
-        // Test should throw moodle_exception
+        // Test should throw moodle_exception because the 'cutofdate' was yesterday
         $this->expectException(moodle_exception::class);
 
         $result = mod_checkmark_external::submit($checkmark->cmid, $submission_examples);
