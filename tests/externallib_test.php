@@ -10,7 +10,7 @@ require_once($CFG->dirroot . '/mod/checkmark/externallib.php');
 /**
  * External mod checkmark functions unit tests
  */
-class mod_assign_external_testcase extends externallib_advanced_testcase {
+class mod_checkmark_external_testcase extends externallib_advanced_testcase {
 
     public function test_get_checkmarks_by_courses() {
         global $CFG, $DB, $USER;
@@ -176,16 +176,16 @@ class mod_assign_external_testcase extends externallib_advanced_testcase {
         $this->assertEquals($course->id, $result->checkmark->course);
 
         // check the examples checked status of the result object
-        $this->assertEquals(1, $result->checkmark->examples[0]->checked);
-        $this->assertEquals(0, $result->checkmark->examples[1]->checked);
-        $this->assertEquals(1, $result->checkmark->examples[2]->checked);
-        $this->assertEquals(0, $result->checkmark->examples[3]->checked);
-        $this->assertEquals(1, $result->checkmark->examples[4]->checked);
-        $this->assertEquals(0, $result->checkmark->examples[5]->checked);
-        $this->assertEquals(1, $result->checkmark->examples[6]->checked);
-        $this->assertEquals(0, $result->checkmark->examples[7]->checked);
-        $this->assertEquals(1, $result->checkmark->examples[8]->checked);
-        $this->assertEquals(0, $result->checkmark->examples[9]->checked);
+        $this->assertEquals($result->checkmark->examples[0]->id % 2, $result->checkmark->examples[0]->checked);
+        $this->assertEquals($result->checkmark->examples[1]->id % 2, $result->checkmark->examples[1]->checked);
+        $this->assertEquals($result->checkmark->examples[2]->id % 2, $result->checkmark->examples[2]->checked);
+        $this->assertEquals($result->checkmark->examples[3]->id % 2, $result->checkmark->examples[3]->checked);
+        $this->assertEquals($result->checkmark->examples[4]->id % 2, $result->checkmark->examples[4]->checked);
+        $this->assertEquals($result->checkmark->examples[5]->id % 2, $result->checkmark->examples[5]->checked);
+        $this->assertEquals($result->checkmark->examples[6]->id % 2, $result->checkmark->examples[6]->checked);
+        $this->assertEquals($result->checkmark->examples[7]->id % 2, $result->checkmark->examples[7]->checked);
+        $this->assertEquals($result->checkmark->examples[8]->id % 2, $result->checkmark->examples[8]->checked);
+        $this->assertEquals($result->checkmark->examples[9]->id % 2, $result->checkmark->examples[9]->checked);
 
         $result = mod_checkmark_external::get_checkmark($checkmark->cmid);
 
