@@ -166,7 +166,6 @@ class mod_checkmark_external_testcase extends externallib_advanced_testcase {
             $submission_examples[] = ['id' => $example->id, 'checked' => $example->id % 2];
         }
 
-
         $result = mod_checkmark_external::submit($checkmark->cmid, $submission_examples);
 
         // checkmark name should be equal to 'Checkmark Module'
@@ -206,5 +205,44 @@ class mod_checkmark_external_testcase extends externallib_advanced_testcase {
         $this->assertEquals($result->checkmark->examples[7]->id % 2, $result->checkmark->examples[7]->checked);
         $this->assertEquals($result->checkmark->examples[8]->id % 2, $result->checkmark->examples[8]->checked);
         $this->assertEquals($result->checkmark->examples[9]->id % 2, $result->checkmark->examples[9]->checked);
+    }
+
+    public function test_get_submit_negative() {
+        global $CFG, $DB, $USER;
+
+        $this->resetAfterTest(true);
+
+        $user = $this->getDataGenerator()->create_user();
+
+        $course = $this->getDataGenerator()->create_course([
+            'fullname' => 'PHPUnitTestCourse',
+            'summary' => 'Test course for automated php unit tests',
+            'summaryformat' => FORMAT_HTML
+        ]);
+
+        $this->getDataGenerator()->enrol_user($user->id, $course->id);
+
+        $checkmark = self::getDataGenerator()->create_module('checkmark', [
+            'course' => $course->id,
+            'name' => 'Checkmark Module',
+            'intro' => 'Checkmark module for automated php unit tests',
+            'introformat' => FORMAT_HTML,
+            'cutoffdate' => time() - 60 * 60 * 24 // yesterday
+        ]);
+
+        $this->setUser($user);
+
+        $result = mod_checkmark_external::get_checkmark($checkmark->cmid);
+
+        $submission_examples = [];
+        foreach ($result->checkmark->examples as $example) {
+            $submission_examples[] = ['id' => $example->id, 'checked' => $example->id % 2];
+        }
+
+        // Test should throw moodle_exception
+        $this->expectException(moodle_exception::class);
+
+        $result = mod_checkmark_external::submit($checkmark->cmid, $submission_examples);
+
     }
 }
