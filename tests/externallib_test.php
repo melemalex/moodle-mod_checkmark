@@ -159,6 +159,9 @@ class mod_assign_external_testcase extends externallib_advanced_testcase {
 
         $this->setUser($user);
 
+        $result = mod_checkmark_external::get_checkmark($checkmark->cmid);
+        echo json_encode($result);
+
         $submission_examples = [
             ['id' => 1, 'checked' => 1],
             ['id' => 2, 'checked' => 0],
