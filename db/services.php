@@ -29,13 +29,4 @@ $functions = [
             'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
         ],
 
-        'mod_checkmark_debug_info' => [ // TODO remove debug info
-            'classname'     => 'mod_checkmark_external',
-            'methodname'    => 'debug_info',
-            'classpath'     => 'mod/checkmark/externallib.php',
-            'description'   => 'debug info',
-            'type'          => 'read',
-            'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
-        ],
-
 ];

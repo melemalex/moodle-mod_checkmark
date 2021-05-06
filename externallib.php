@@ -8,38 +8,6 @@ require_once($CFG->dirroot . '/mod/checkmark/locallib.php');
 
 class mod_checkmark_external extends external_api {
 
-    public static function debug_info_parameters() {
-        return new external_function_parameters([
-            'id' => new external_value(PARAM_INT, 'checkmark id'),
-        ]);
-    }
-
-    public static function debug_info_returns() {
-        return new external_single_structure([
-            'debug' => new external_value(PARAM_RAW, "info"),
-        ]);
-    }
-
-    public static function debug_info($id) {
-        $params = self::validate_parameters(self::debug_info_parameters(), ['id' => $id]);
-
-        $checkmark = new checkmark($params['id']);
-
-        $context = context_module::instance($checkmark->cm->id);
-        require_capability('mod/checkmark:view', $context);
-        self::validate_context($context);
-
-        $debug_info = new stdClass();
-
-        $debug_info->checkmark = $checkmark;
-        $debug_info->submission = $checkmark->get_submission();
-        $debug_info->feedback = $checkmark->get_feedback();
-
-        $result = new stdClass();
-        $result->debug = json_encode($debug_info);
-        return $result;
-    }
-
     /**
      * Returns description of the get_checkmarks_by_courses parameters
      * @return external_function_parameters
