@@ -103,6 +103,14 @@ class mod_checkmark_external extends external_api {
         ]);
     }
 
+    /**
+     * @throws restricted_context_exception
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws moodle_exception
+     * @throws required_capability_exception
+     * @throws invalid_parameter_exception
+     */
     public static function get_checkmark($id) {
         $params = self::validate_parameters(self::get_checkmark_parameters(), ['id' => $id]);
 
