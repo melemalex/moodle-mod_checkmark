@@ -160,20 +160,12 @@ class mod_assign_external_testcase extends externallib_advanced_testcase {
         $this->setUser($user);
 
         $result = mod_checkmark_external::get_checkmark($checkmark->cmid);
-        echo json_encode($result);
 
-        $submission_examples = [
-            ['id' => 1, 'checked' => 1],
-            ['id' => 2, 'checked' => 0],
-            ['id' => 3, 'checked' => 1],
-            ['id' => 4, 'checked' => 0],
-            ['id' => 5, 'checked' => 1],
-            ['id' => 6, 'checked' => 0],
-            ['id' => 7, 'checked' => 1],
-            ['id' => 8, 'checked' => 0],
-            ['id' => 9, 'checked' => 1],
-            ['id' => 10, 'checked' => 0],
-        ];
+        $submission_examples = [];
+        foreach ($result->checkmark->examples as $example) {
+            $submission_examples[] = ['id' => $example->id, 'checked' => $example->id % 2];
+        }
+
 
         $result = mod_checkmark_external::submit($checkmark->cmid, $submission_examples);
 
@@ -204,15 +196,15 @@ class mod_assign_external_testcase extends externallib_advanced_testcase {
         $this->assertEquals($course->id, $result->checkmark->course);
 
         // check the examples checked status was correctly saved
-        $this->assertEquals(1, $result->checkmark->examples[0]->checked);
-        $this->assertEquals(0, $result->checkmark->examples[1]->checked);
-        $this->assertEquals(1, $result->checkmark->examples[2]->checked);
-        $this->assertEquals(0, $result->checkmark->examples[3]->checked);
-        $this->assertEquals(1, $result->checkmark->examples[4]->checked);
-        $this->assertEquals(0, $result->checkmark->examples[5]->checked);
-        $this->assertEquals(1, $result->checkmark->examples[6]->checked);
-        $this->assertEquals(0, $result->checkmark->examples[7]->checked);
-        $this->assertEquals(1, $result->checkmark->examples[8]->checked);
-        $this->assertEquals(0, $result->checkmark->examples[9]->checked);
+        $this->assertEquals($result->checkmark->examples[0]->id % 2, $result->checkmark->examples[0]->checked);
+        $this->assertEquals($result->checkmark->examples[1]->id % 2, $result->checkmark->examples[1]->checked);
+        $this->assertEquals($result->checkmark->examples[2]->id % 2, $result->checkmark->examples[2]->checked);
+        $this->assertEquals($result->checkmark->examples[3]->id % 2, $result->checkmark->examples[3]->checked);
+        $this->assertEquals($result->checkmark->examples[4]->id % 2, $result->checkmark->examples[4]->checked);
+        $this->assertEquals($result->checkmark->examples[5]->id % 2, $result->checkmark->examples[5]->checked);
+        $this->assertEquals($result->checkmark->examples[6]->id % 2, $result->checkmark->examples[6]->checked);
+        $this->assertEquals($result->checkmark->examples[7]->id % 2, $result->checkmark->examples[7]->checked);
+        $this->assertEquals($result->checkmark->examples[8]->id % 2, $result->checkmark->examples[8]->checked);
+        $this->assertEquals($result->checkmark->examples[9]->id % 2, $result->checkmark->examples[9]->checked);
     }
 }
