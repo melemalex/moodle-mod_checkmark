@@ -100,7 +100,7 @@ class mod_checkmark_external_testcase extends externallib_advanced_testcase {
 
         $this->setUser($user);
 
-        $result = mod_checkmark_external::get_checkmark($checkmark->cmid);
+        $result = mod_checkmark_external::get_checkmark($checkmark->id);
 
         // checkmark name should be equal to 'Checkmark Module'
         $this->assertEquals('Checkmark Module', $result->checkmark->name);
@@ -140,7 +140,7 @@ class mod_checkmark_external_testcase extends externallib_advanced_testcase {
         // Test should throw require_login_exception
         $this->expectException(require_login_exception::class);
 
-        $result = mod_checkmark_external::get_checkmark($checkmark->cmid);
+        $result = mod_checkmark_external::get_checkmark($checkmark->id);
 
     }
 
@@ -171,14 +171,14 @@ class mod_checkmark_external_testcase extends externallib_advanced_testcase {
 
         $this->setUser($user);
 
-        $result = mod_checkmark_external::get_checkmark($checkmark->cmid);
+        $result = mod_checkmark_external::get_checkmark($checkmark->id);
 
         $submission_examples = [];
         foreach ($result->checkmark->examples as $example) {
             $submission_examples[] = ['id' => $example->id, 'checked' => $example->id % 2];
         }
 
-        $result = mod_checkmark_external::submit($checkmark->cmid, $submission_examples);
+        $result = mod_checkmark_external::submit($checkmark->id, $submission_examples);
 
         // checkmark name should be equal to 'Checkmark Module'
         $this->assertEquals('Checkmark Module', $result->checkmark->name);
@@ -198,7 +198,7 @@ class mod_checkmark_external_testcase extends externallib_advanced_testcase {
         $this->assertEquals($result->checkmark->examples[8]->id % 2, $result->checkmark->examples[8]->checked);
         $this->assertEquals($result->checkmark->examples[9]->id % 2, $result->checkmark->examples[9]->checked);
 
-        $result = mod_checkmark_external::get_checkmark($checkmark->cmid);
+        $result = mod_checkmark_external::get_checkmark($checkmark->id);
 
         // checkmark name should be equal to 'Checkmark Module'
         $this->assertEquals('Checkmark Module', $result->checkmark->name);
@@ -247,7 +247,7 @@ class mod_checkmark_external_testcase extends externallib_advanced_testcase {
 
         $this->setUser($user);
 
-        $result = mod_checkmark_external::get_checkmark($checkmark->cmid);
+        $result = mod_checkmark_external::get_checkmark($checkmark->id);
 
         $submission_examples = [];
         foreach ($result->checkmark->examples as $example) {
@@ -257,7 +257,7 @@ class mod_checkmark_external_testcase extends externallib_advanced_testcase {
         // Test should throw moodle_exception because the 'cutofdate' was yesterday
         $this->expectException(moodle_exception::class);
 
-        $result = mod_checkmark_external::submit($checkmark->cmid, $submission_examples);
+        $result = mod_checkmark_external::submit($checkmark->id, $submission_examples);
 
     }
 }

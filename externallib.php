@@ -84,7 +84,7 @@ class mod_checkmark_external extends external_api {
      */
     public static function get_checkmark_parameters() {
         return new external_function_parameters([
-            'id' => new external_value(PARAM_INT, 'The course module id (cmid) of the checkmark'),
+            'checkmarkid' => new external_value(PARAM_INT, 'The id of the checkmark'),
         ]);
     }
 
@@ -99,7 +99,7 @@ class mod_checkmark_external extends external_api {
     }
 
     /**
-     * Returns the checkmark for the given id (cmid is used to find the checkmark)
+     * Returns the checkmark for the given id
      *
      * @throws restricted_context_exception
      * @throws coding_exception
@@ -108,10 +108,11 @@ class mod_checkmark_external extends external_api {
      * @throws required_capability_exception
      * @throws invalid_parameter_exception
      */
-    public static function get_checkmark($id) {
-        $params = self::validate_parameters(self::get_checkmark_parameters(), ['id' => $id]);
+    public static function get_checkmark($checkmarkid) {
+        $params = self::validate_parameters(self::get_checkmark_parameters(), ['checkmarkid' => $checkmarkid]);
 
-        $checkmark = new checkmark($params['id']);
+        $cm = get_coursemodule_from_instance('grouptool', $params['checkmarkid'], 0, false, MUST_EXIST);
+        $checkmark = new checkmark($cm->cmid);
 
         $context = context_module::instance($checkmark->cm->id);
         require_capability('mod/checkmark:view', $context);
@@ -128,7 +129,7 @@ class mod_checkmark_external extends external_api {
      */
     public static function submit_parameters() {
         return new external_function_parameters([
-            'id' => new external_value(PARAM_INT, 'The course module id (cmid) of the checkmark'),
+            'checkmarkid' => new external_value(PARAM_INT, 'The id of the checkmark'),
             'submission_examples' => new external_multiple_structure(self::submit_example_structure(),
                 'The examples of the submission (must match the examples of the checkmark)'),
         ]);
@@ -149,7 +150,7 @@ class mod_checkmark_external extends external_api {
      * Checks if the user can submit a checkmark and if the given submission_examples match the examples of the
      * checkmark. Updates the submission of the checkmark and returns the checkmark
      *
-     * @param $id
+     * @param $checkmarkid
      * @param $submission_examples
      * @return stdClass
      * @throws coding_exception
@@ -159,16 +160,17 @@ class mod_checkmark_external extends external_api {
      * @throws required_capability_exception
      * @throws restricted_context_exception
      */
-    public static function submit($id, $submission_examples) {
+    public static function submit($checkmarkid, $submission_examples) {
         global $USER;
         $params = self::validate_parameters(self::submit_parameters(), [
-            'id' => $id,
+            'checkmarkid' => $checkmarkid,
             'submission_examples' => $submission_examples
         ]);
 
         $warnings = [];
 
-        $checkmark = new checkmark($params['id']);
+        $cm = get_coursemodule_from_instance('grouptool', $params['checkmarkid'], 0, false, MUST_EXIST);
+        $checkmark = new checkmark($cm->cmid);
 
         $context = context_module::instance($checkmark->cm->id);
         require_capability('mod/checkmark:view', $context);
