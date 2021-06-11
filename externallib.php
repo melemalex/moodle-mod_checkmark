@@ -111,7 +111,7 @@ class mod_checkmark_external extends external_api {
     public static function get_checkmark($checkmarkid) {
         $params = self::validate_parameters(self::get_checkmark_parameters(), ['checkmarkid' => $checkmarkid]);
 
-        $cm = get_coursemodule_from_instance('grouptool', $params['checkmarkid'], 0, false, MUST_EXIST);
+        $cm = get_coursemodule_from_instance('checkmark', $params['checkmarkid'], 0, false, MUST_EXIST);
         $checkmark = new checkmark($cm->id);
 
         $context = context_module::instance($checkmark->cm->id);
@@ -169,7 +169,7 @@ class mod_checkmark_external extends external_api {
 
         $warnings = [];
 
-        $cm = get_coursemodule_from_instance('grouptool', $params['checkmarkid'], 0, false, MUST_EXIST);
+        $cm = get_coursemodule_from_instance('checkmark', $params['checkmarkid'], 0, false, MUST_EXIST);
         $checkmark = new checkmark($cm->id);
 
         $context = context_module::instance($checkmark->cm->id);
